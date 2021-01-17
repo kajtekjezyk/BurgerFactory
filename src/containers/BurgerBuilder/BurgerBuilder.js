@@ -11,7 +11,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import {connect} from 'react-redux';
 import {addIngredient, removeIngredient, initBurger, purchaseInit, purchasing, stopPurchasing} from '../../store/actions/index';
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
     
     componentDidMount () {
         if (this.props.ingredients && (this.props.purchasingStarted || !this.props.purchased))
