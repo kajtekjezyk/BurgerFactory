@@ -59,7 +59,9 @@ export class BurgerBuilder extends Component {
         {
             burger = (
                 <div >
-                    <Burger className={classes.BurgerBuilder} ingredients={this.props.ingredients} clicked={this.props.removeIngredient}></Burger>
+                    <div className={classes.BurgerBuilder}>
+                        <Burger  ingredients={this.props.ingredients} clicked={this.props.removeIngredient}></Burger>
+                    </div>
                     <IngredientContext.Provider value={{
                         add: this.props.addIngredient,
                         rem: this.props.removeIngredient
