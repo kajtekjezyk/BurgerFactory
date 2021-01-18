@@ -10,6 +10,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import {connect} from 'react-redux';
 import {addIngredient, removeIngredient, initBurger, purchaseInit, purchasing, stopPurchasing} from '../../store/actions/index';
+import classes from "./BurgerBuilder.css";
 
 export class BurgerBuilder extends Component {
     
@@ -57,21 +58,24 @@ export class BurgerBuilder extends Component {
         if (this.props.ingredients)
         {
             burger = (
-                <Aux>
-                    <Burger ingredients={this.props.ingredients} clicked={this.props.removeIngredient}></Burger>
+                <div >
+                    <Burger className={classes.BurgerBuilder} ingredients={this.props.ingredients} clicked={this.props.removeIngredient}></Burger>
                     <IngredientContext.Provider value={{
                         add: this.props.addIngredient,
                         rem: this.props.removeIngredient
                     }}>
-                        <BuildControls
-                            ingredients={this.props.ingredients}
-                            disabled={disabledInfo}
-                            totalPrice={this.props.totalPrice}
-                            disableDisplay={!this.updatePurchaseState(this.props.ingredients)}
-                            isAuth={this.props.isAuthenticated}
-                            purchased={this.orderClickHandler}/>
+                        
+                    <BuildControls
+                        ingredients={this.props.ingredients}
+                        disabled={disabledInfo}
+                        totalPrice={this.props.totalPrice}
+                        disableDisplay={!this.updatePurchaseState(this.props.ingredients)}
+                        isAuth={this.props.isAuthenticated}
+                        purchased={this.orderClickHandler}/>
+                        
                     </IngredientContext.Provider>
-                </Aux>
+                    
+                </div>
             )
             orderSummary = (
                 <OrderSummary
@@ -86,7 +90,8 @@ export class BurgerBuilder extends Component {
                 <Modal show={this.props.purchasingStarted} modalClosed={this.purchaseCancelHandler}>
                     {orderSummary}
                 </Modal>
-                {burger}
+                    {burger}
+                
             </Aux>
         );
     } 

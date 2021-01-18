@@ -1,0 +1,13 @@
+.BurgerBuilder{
+    width: 100%;
+    margin: auto;
+    height: 250px;
+}
+
+@media (min-width: 1000px) {
+    .BurgerBuilder {
+        width: 800px;
+        height: 600px;
+        box-sizing: border-box;
+    }
+}
