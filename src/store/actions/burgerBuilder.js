@@ -49,3 +49,11 @@ export const initBurger = () => {
         })
     }
 }
+
+export const loadBurger = (price, ingredients) => {
+    return {
+        type: actionTypes.LOAD_BURGER,
+        burger: ingredients,
+        price: price
+    }
+}

@@ -3,7 +3,6 @@ import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.css';
 import Axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import {purchaseBurgerStart} from "../../../store/actions/index";
 import {connect} from 'react-redux';
@@ -45,7 +44,12 @@ class ContactData extends Component {
                     isZip: true
                 }
             },
-            
+            burgerName: {
+                ...makeInputField("Type Burger Name"),
+                validation: {},
+                value: "My Burger",
+                defaultValue: "My Burger"
+            },
             deliveryMethod: {
                 inputType: "select",
                 validation: {},
@@ -80,11 +84,12 @@ class ContactData extends Component {
         {
             formData[formElement] = this.state.orderForm[formElement]["value"];
         }
+        if (formData['burgerName'] === "") formData['burgerName'] = this.state.orderForm.burgerName.defaultValue;
         const order = {
             ingredients: this.props.ingredients,
             price: this.props.price,
             orderData: formData,
-            userId: this.props.userId
+            userId: this.props.userId,
         };
         this.props.purchaseBurgerStart(order, this.props.token);
     }

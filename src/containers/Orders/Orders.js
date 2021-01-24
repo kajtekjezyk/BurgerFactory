@@ -5,6 +5,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 import {connect} from 'react-redux';
+import { loadBurger } from '../../store/actions/index';
 
 
 class Orders extends Component {
@@ -16,6 +17,11 @@ class Orders extends Component {
 
     componentWillUnmount = () => {
         this.setState({orders: []});
+    }
+
+    onOrderClick = (price, ingredients) => {
+        this.props.loadBurger(price, ingredients);
+        this.props.history.push("/");
     }
 
     componentDidMount = () => {
@@ -42,13 +48,16 @@ class Orders extends Component {
         if (!this.state.loading){
             orders = (
                 <Aux>
-                    {this.state.orders.map(elem => (
-                        <Order 
+                    {this.state.orders.map(elem => {
+                        return (
+                        <Order
                             key={elem.id}
+                            burgerName={elem.orderData.burgerName}
                             ingredients={elem.ingredients}
                             price={elem.price}
+                            clicked={() => this.onOrderClick(elem.price, elem.ingredients)}
                         />
-                    ))}
+                    )})}
                 </Aux>
             )
         }
@@ -64,7 +73,14 @@ const mapStateToProps = (state) => {
     return {
         token: state.auth.token,
         userId: state.auth.userId
-    }
-}
+    };
+};
 
-export default connect(mapStateToProps)(withErrorHandler(Orders, Axios));
+const mapDispatchToProps = (dispatch) => {
+    return {
+        loadBurger: (price, ingredients) => dispatch(loadBurger(price, ingredients))
+    };
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, Axios));

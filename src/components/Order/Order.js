@@ -24,7 +24,8 @@ const order = (props) => {
     })
 
     return (
-        <div className={classes.Order}>
+        <div className={classes.Order} onClick={props.clicked}>
+            <h2>Burger name: {props.burgerName}</h2>
             <p>Ingredients: {IngredientArray}</p>
             <p>Price: <strong>{props.price}$</strong></p>
         </div>

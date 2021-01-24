@@ -37,6 +37,16 @@ const initBurger = (state, action) => {
     return updateObject(state, updatedElements);
 }
 
+const loadBurger = (state, action) => {
+    const updatedElements = {
+        error: false, 
+        purchasing: false,
+        ingredients: action.burger,
+        totalPrice: action.price
+    };
+    return updateObject(state, updatedElements);
+}
+
 const burgerReducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.ADD_INGREDIENT: return modifyBurger(state, action, 1);
@@ -45,6 +55,7 @@ const burgerReducer = (state = initialState, action) => {
         case actionTypes.INIT_BURGER: return initBurger(state, action);
         case actionTypes.PURCHASING: return updateObject(state, {purchasing: true});
         case actionTypes.STOP_PURCHASING: return updateObject(state, {purchasing: false});
+        case actionTypes.LOAD_BURGER : return loadBurger(state, action)
         default:
             return state;
     }

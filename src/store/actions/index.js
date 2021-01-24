@@ -2,7 +2,8 @@ export {addIngredient,
         removeIngredient,
         initBurger,
         purchasing,
-        stopPurchasing} from "./burgerBuilder";
+        stopPurchasing,
+        loadBurger} from "./burgerBuilder";
 
 export {purchaseBurgerStart,
         purchaseInit} from "./order";
