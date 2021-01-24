@@ -47,7 +47,9 @@ class ContactData extends Component {
             burgerName: {
                 ...makeInputField("Type Burger Name"),
                 validation: {},
-                value: "My Burger",
+                touched: true,
+                valid: true,
+                value: this.props.burgerName,
                 defaultValue: "My Burger"
             },
             deliveryMethod: {
@@ -123,7 +125,8 @@ const mapStateToProps = (state) => {
         token: state.auth.token,
         userId: state.auth.userId,
         userEmail: state.auth.userEmail,
-        userName: state.auth.userName
+        userName: state.auth.userName,
+        burgerName: state.burger.burgerName
     };
 };
 

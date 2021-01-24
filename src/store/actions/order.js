@@ -38,3 +38,9 @@ export const purchaseInit = () => {
         type: actionTypes.PURCHASE_INIT
     }
 }
+
+export const resetPurchase = () => {
+    return {
+        type: actionTypes.RESET_PURCHASE
+    }
+}

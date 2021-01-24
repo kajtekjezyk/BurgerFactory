@@ -7,6 +7,17 @@
     box-sizing: border-box;
 }
 
-.Order:hover {
-    cursor: pointer;
+.OrderHeader {
+    grid-template-columns: auto;
+    grid-template-rows: auto auto auto;
+    justify-self: center;
 }
+
+@media(min-width: 600px) {
+    .OrderHeader {
+        display: grid;
+        grid-template-columns: 50% 25% 25%;
+        padding-right: 10px;
+    }
+}
+

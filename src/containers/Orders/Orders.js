@@ -5,7 +5,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 import {connect} from 'react-redux';
-import { loadBurger } from '../../store/actions/index';
+import { loadBurger, resetPurchase } from '../../store/actions/index';
 
 
 class Orders extends Component {
@@ -19,12 +19,29 @@ class Orders extends Component {
         this.setState({orders: []});
     }
 
-    onOrderClick = (price, ingredients) => {
-        this.props.loadBurger(price, ingredients);
+    orderLoad = (price, ingredients, burgerName) => {
+        this.props.resetPurchase();
+        this.props.loadBurger(price, ingredients, burgerName);
         this.props.history.push("/");
     }
 
+    orderRemove = (id) => {
+        this.setState({loading: true});
+        Axios.delete(`/orders/${id}.json?auth=${this.props.token}`).then(response=> {
+            this.setState((prevState) => {
+                return {
+                    orders: prevState.orders.filter(elem => elem.id !== id),
+                    loading: false
+                }
+                    
+            })
+        }).catch(error => {
+            this.setState({loading: false});
+        });
+    }
+
     componentDidMount = () => {
+        this.setState({loading: true});
         const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId +'"';
         Axios.get('/orders.json' + queryParams).then(response => {
             // &equalTo=${this.props.userId}
@@ -55,7 +72,8 @@ class Orders extends Component {
                             burgerName={elem.orderData.burgerName}
                             ingredients={elem.ingredients}
                             price={elem.price}
-                            clicked={() => this.onOrderClick(elem.price, elem.ingredients)}
+                            load={() => this.orderLoad(elem.price, elem.ingredients, elem.orderData.burgerName)}
+                            remove={() => this.orderRemove(elem.id)}
                         />
                     )})}
                 </Aux>
@@ -78,7 +96,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        loadBurger: (price, ingredients) => dispatch(loadBurger(price, ingredients))
+        loadBurger: (price, ingredients, burgerName) => dispatch(loadBurger(price, ingredients, burgerName)),
+        resetPurchase: () => dispatch(resetPurchase())
     };
 };
 

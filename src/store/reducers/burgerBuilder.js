@@ -5,7 +5,8 @@ const initialState = {
     ingredients: null,
     totalPrice: 4,
     error: false,
-    purchasing: false
+    purchasing: false,
+    burgerName: "My Burger"
 }
 
 const INGREDIENT_PRICES = {
@@ -25,7 +26,7 @@ const modifyBurger = (oldState, action, diff) => {
     const updatedState = {
         ingredients: updateObject(oldState.ingredients, updatedIngredient),
         totalPrice: roundMe(oldState.totalPrice + diff * INGREDIENT_PRICES[action.ingType])}
-    return updatedState;
+    return updateObject(oldState, updatedState);
 }
 
 const initBurger = (state, action) => {
@@ -42,7 +43,8 @@ const loadBurger = (state, action) => {
         error: false, 
         purchasing: false,
         ingredients: action.burger,
-        totalPrice: action.price
+        totalPrice: action.price, 
+        burgerName: action.burgerName
     };
     return updateObject(state, updatedElements);
 }

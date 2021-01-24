@@ -19,6 +19,32 @@
     color: #5C9210;
 }
 
+.Remove {
+    color: #af2e07;
+    border: 1px solid gray;
+    border-radius: 8%;
+    text-align: center !important;
+    width: 100%;
+    margin: 0;
+}
+
+.Load {
+    color: #5C9210;
+    border: 1px solid gray;
+    border-radius: 8%;
+    text-align: center !important;
+    width: 100%;
+    margin: 0;
+}
+
+.Remove:hover {
+    border: 1px solid wheat;
+}
+
+.Load:hover {
+    border: 1px solid wheat;
+}
+
 .Danger {
     color: #944317;
 }

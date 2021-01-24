@@ -6,7 +6,8 @@ export {addIngredient,
         loadBurger} from "./burgerBuilder";
 
 export {purchaseBurgerStart,
-        purchaseInit} from "./order";
+        purchaseInit,
+        resetPurchase} from "./order";
 
 export {login,
         register,

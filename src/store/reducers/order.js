@@ -17,7 +17,8 @@ const orderReducer = (state = initialState, action) => {
         case actionTypes.PURCHASE_BURGER_SUCCESS: return purchaseSucceed(state, action);
         case actionTypes.PURCHASE_BURGER_FAIL: return updateObject(state, {loading: false});
         case actionTypes.PURCHASE_STARTED: return updateObject(state, {loading: true});
-        case actionTypes.PURCHASE_INIT: return updateObject(state, {purchased: false}); 
+        case actionTypes.PURCHASE_INIT: return updateObject(state, {purchased: false});
+        case actionTypes.RESET_PURCHASE: return updateObject(state, initialState); 
         default:
             return state;
     }

@@ -50,10 +50,11 @@ export const initBurger = () => {
     }
 }
 
-export const loadBurger = (price, ingredients) => {
+export const loadBurger = (price, ingredients, burgerName) => {
     return {
         type: actionTypes.LOAD_BURGER,
         burger: ingredients,
-        price: price
+        price: price,
+        burgerName: burgerName
     }
 }

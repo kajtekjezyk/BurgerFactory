@@ -9,7 +9,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import {connect} from 'react-redux';
-import {addIngredient, removeIngredient, initBurger, purchaseInit, purchasing, stopPurchasing} from '../../store/actions/index';
+import {resetPurchase, addIngredient, removeIngredient, initBurger, purchaseInit, purchasing, stopPurchasing} from '../../store/actions/index';
 import classes from "./BurgerBuilder.css";
 
 export class BurgerBuilder extends Component {
@@ -17,7 +17,9 @@ export class BurgerBuilder extends Component {
     componentDidMount () {
         if (this.props.ingredients && (this.props.purchasingStarted || !this.props.purchased))
             return;
+        this.props.resetPurchase();
         this.props.initBurger();
+
     }
 
     orderClickHandler = () => {
@@ -106,7 +108,8 @@ const mapDispatchtoProps = (dispatch) => {
        initBurger: () => dispatch(initBurger()),
        purchaseInit: () => dispatch(purchaseInit()),
        purchasing: () => dispatch(purchasing()),
-       stopPurchasing: () => dispatch(stopPurchasing())
+       stopPurchasing: () => dispatch(stopPurchasing()),
+       resetPurchase: ()=>dispatch(resetPurchase())
        
     };
 }
