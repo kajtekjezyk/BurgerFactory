@@ -10,7 +10,9 @@ const burger = (props) => {
             return [...Array(props.ingredients[ingredient])].map((_, index) => {
                 if (ingredient === 'meat')
                 {   
-                    if (isMeatSet) return;
+                    if (isMeatSet) {
+                        return null;
+                    }
                     isMeatSet = true;   
                 }
                 return <BurgerIngredient

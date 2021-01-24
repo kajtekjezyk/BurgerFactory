@@ -13,6 +13,7 @@ const buildConntrols = (props) => {
     const controls = Object.keys(props.ingredients).map(elem =>{
         return (
             <BuildControl
+                elCount={props.ingredients[elem]}
                 label={makeLabel(elem)}
                 key={elem}
                 type={elem}
@@ -28,7 +29,7 @@ const buildConntrols = (props) => {
         <button
             className={classses.OrderButton}
             disabled={props.disableDisplay}
-            onClick={props.purchased}>{props.isAuth ? "ORDER NOW" : "Sign up to order"}</button>
+            onClick={props.purchased}>{props.isAuth ? "ORDER NOW" : "Sign"}</button>
     </div>
     );
 };

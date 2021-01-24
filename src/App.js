@@ -16,8 +16,12 @@ const asyncOrders = asyncComponent(()=>{
   return import('./containers/Orders/Orders');
 });
 
-const asyncAuth = asyncComponent(()=>{
-  return import('./containers/Auth/Auth');
+const asyncLogin = asyncComponent(()=>{
+  return import('./containers/Auth/Login/Login');
+});
+
+const asyncRegister = asyncComponent(()=>{
+  return import('./containers/Auth/Register/Register');
 });
 
 
@@ -31,9 +35,10 @@ class App extends Component {
 
     let routes = (
       <Switch>
-        <Route path='/auth' component={asyncAuth} />
+        <Route path='/login' component={asyncLogin} />
+        <Route path='/register' component={asyncRegister} />
         <Route path='/' exact component={BurgerBuilder}/>
-        <Redirect to="/" />
+        <Redirect to='/' />
       </Switch>
     )
     if (this.props.isAuthenticated) {

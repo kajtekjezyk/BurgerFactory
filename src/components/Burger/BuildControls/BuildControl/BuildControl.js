@@ -20,6 +20,7 @@ const buildControl = (props) => {
             onClick={() => ingredientContext.add(props.type)}>
                 More
             </button>
+        <label className={classes.Counter}>{props.elCount}</label>
     </div>);
 };
 

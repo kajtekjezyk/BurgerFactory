@@ -7,6 +7,7 @@ export {addIngredient,
 export {purchaseBurgerStart,
         purchaseInit} from "./order";
 
-export {auth,
+export {login,
+        register,
         logOut,
         authCheckState} from "./auth";

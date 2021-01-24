@@ -10,7 +10,7 @@ const navigationItems = (props) => (
         {props.isAuth ? <NavigationItem link="/orders" clicked={props.clicked}>Orders</NavigationItem>: null}
         {props.isAuth ?
             <NavigationItem link="/logout" exact clicked={props.clicked}>Logout</NavigationItem>:
-            <NavigationItem link="/auth" exact clicked={props.clicked}>Authentication</NavigationItem>}
+            <NavigationItem link="/login" exact clicked={props.clicked}>Authentication</NavigationItem>}
         
     </ul>
 );

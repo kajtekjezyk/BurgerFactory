@@ -7,7 +7,7 @@ import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import {purchaseBurgerStart} from "../../../store/actions/index";
 import {connect} from 'react-redux';
-import {makeInputField, checkValidity, checkIfFormIsValid} from "../../../helpers/formHelpers";
+import {makeInputField, checkValidity, checkIfFormIsValid, generateForm} from "../../../helpers/formHelpers";
 
 class ContactData extends Component {
     
@@ -15,17 +15,23 @@ class ContactData extends Component {
         orderForm: {
             name: {
                 ...makeInputField("Your Name"),
+                value: this.props.userName,
                 validation: {
                     isNonNumeric: true,
                     required: true
-                }
+                },
+                touched: true,
+                valid: true
             },
             email: {
                 ...makeInputField("Your Email"),
+                value: this.props.userEmail,
                 validation: {
                     required: true,
                     isEmail: true
-                }
+                },
+                touched: true,
+                valid: true
             },
             street: {
                 ...makeInputField("Street"),
@@ -39,9 +45,7 @@ class ContactData extends Component {
                     isZip: true
                 }
             },
-            country: {
-                ...makeInputField("Country"),
-            },
+            
             deliveryMethod: {
                 inputType: "select",
                 validation: {},
@@ -89,28 +93,14 @@ class ContactData extends Component {
         let form = <Spinner />;
         const formList = [];
         if (!this.props.loading) {
-            for (let input in this.state.orderForm) {
-                let inputData = this.state.orderForm[input];
-                formList.push(
-                    <Input
-                        key={input}
-                        inputType={inputData["inputType"]}
-                        elementConfig={inputData["elementConfig"]}
-                        value={inputData["value"]}
-                        changed={(event) => this.inputChangedHandler(event, input)}
-                        invalid={!inputData['valid']}
-                        shouldValidate={Object.keys(inputData.validation).length}
-                        touched={inputData.touched}
-                />)
-            }
+            generateForm(formList, this.state.orderForm, this.inputChangedHandler)
             form = (
                 <form onSubmit={this.orderHandler}>
                     {formList}
                     <Button btnType="Success" disabled={!this.state.isFormValid}>ORDER</Button>
                 </form>
             );
-        }
-        
+        }       
         return (
             <div className={classes.ContactData}>
                 <h4>Enter Your Contact Data</h4>
@@ -126,7 +116,9 @@ const mapStateToProps = (state) => {
         price: state.burger.totalPrice,
         loading: state.order.loading,
         token: state.auth.token,
-        userId: state.auth.userId
+        userId: state.auth.userId,
+        userEmail: state.auth.userEmail,
+        userName: state.auth.userName
     };
 };
 

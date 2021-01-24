@@ -54,3 +54,10 @@
     background-color: #99703F;
     color: white;
 }
+
+.Counter {
+    border: 1px;
+    padding: 5px 10px;
+
+    background-color: wheat;
+}

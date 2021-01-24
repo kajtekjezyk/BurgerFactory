@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
-import {makeInputField, checkValidity, checkIfFormIsValid} from '../../helpers/formHelpers';
-import Input from '../../components/UI/Input/Input';
-import Button from '../../components/UI/Button/Button';
-import classes from './Auth.css';
+import {makeInputField, checkValidity, checkIfFormIsValid, generateForm} from '../../../helpers/formHelpers';
+import Button from '../../../components/UI/Button/Button';
+import classes from './Login.css';
 import {connect} from 'react-redux';
-import {auth} from '../../store/actions/auth';
-import Spinner from '../../components/UI/Spinner/Spinner';
-import Aux from '../../hoc/Auxiliary/Auxiliary';
+import {login} from '../../../store/actions/auth';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import {Redirect} from 'react-router-dom';
 
-class Auth extends Component {
+class Login extends Component {
 
     state = {
         controls: {
@@ -33,7 +32,6 @@ class Auth extends Component {
             },
         },
         isFormValid: false,
-        isSigneup: true
     };
 
     inputChangedHandler = (event, type) => {
@@ -50,14 +48,11 @@ class Auth extends Component {
     authHandler = (event) => {
         event.preventDefault();
         this.props.onAuth(this.state.controls.email.value,
-                          this.state.controls.password.value,
-                          this.state.isSigneup);
+                          this.state.controls.password.value);
     }
 
     switchAuthModeHandler = () => {
-        this.setState(prevState => {
-            return {isSigneup: !prevState.isSigneup}
-        })
+        this.props.history.push('/register')
     }
 
     render() {
@@ -69,38 +64,24 @@ class Auth extends Component {
             )
         }
 
-
         let form = <Spinner />;
         const formList = [];
+        generateForm(formList, this.state.controls, this.inputChangedHandler);
         if (!this.props.loading)
         {
-            for (let input in this.state.controls) {
-                let inputData = this.state.controls[input];
-                formList.push(
-                <Input
-                    key={input}
-                    inputType={inputData["inputType"]}
-                    elementConfig={inputData["elementConfig"]}
-                    value={inputData["value"]}
-                    changed={(event) => this.inputChangedHandler(event, input)}
-                    invalid={!inputData['valid']}
-                    shouldValidate={Object.keys(inputData.validation).length}
-                    touched={inputData.touched}
-                />)
-            }
             form = (
                 <Aux>
                     <form onSubmit={this.authHandler}>
                         {errorMessage}
                         <div>
-                            <h4>{this.state.isSigneup ? 'Register' : 'Login'}</h4>
+                            <h4>Login</h4>
                             {formList}
                             <Button btnType="Success" disabled={!this.state.isFormValid}>SUBBMIT</Button>
                         </div>
                     </form>
                     <Button btnType="Danger" 
                         clicked={this.switchAuthModeHandler}>
-                            Switch to {this.state.isSigneup ? 'Login' : 'Register'}
+                            Switch to Register
                     </Button>
                 </Aux>
             );
@@ -115,6 +96,9 @@ class Auth extends Component {
         );
     }
 }
+
+
+
 const mapStateToProps = state => {
     return {
         loading: state.auth.loading,
@@ -125,8 +109,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAuth: (email, password, isSignup) => dispatch(auth(email, password, isSignup))
+        onAuth: (email, password) => dispatch(login(email, password))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
