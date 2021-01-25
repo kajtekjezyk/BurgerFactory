@@ -4,7 +4,6 @@
     height: 250px;
 }
 
-
 @media (min-width: 500px) {
     .BurgerBuilder {
         width: 450px;
@@ -16,7 +15,7 @@
 @media (min-width: 1000px) {
     .BurgerBuilder {
         width: 900px;
-        height: 600px;
+        height: 500px;
         box-sizing: border-box;
     }
 }

@@ -13,20 +13,22 @@ class Login extends Component {
     state = {
         controls: {
                 name: {
-                    ...makeInputField("Your Name"),
+                    ...makeInputField("Your Name", "Name"),
                     validation: {
                         required: true
-                    }
+                    },
+                    errorMessage: "Name is required"
                 },
                 email: {
-                    ...makeInputField("Your Email", "email"),
+                    ...makeInputField("Your Email", "Email", "email"),
                     validation: {
                         required: true,
                         isEmail: true
-                    }
+                    },
+                    errorMessage: "Invalid Email"
                 },
                 password: {
-                    ...makeInputField(null, "password"),
+                    ...makeInputField(null, "Passord", "password"),
                     elementConfig: {
                         placeholder: "Password",
                         type: "password"
@@ -34,10 +36,11 @@ class Login extends Component {
                     validation: {
                         required: true,
                         minLength: 6
-                    }
+                    },
+                    errorMessage: "Minimal password length: 6 chars"
                 },
                 password2: {
-                    ...makeInputField(null, "password"),
+                    ...makeInputField(null, "Confirm Passord", "password"),
                     elementConfig: {
                         placeholder: "Repeat Password",
                         type: "password"
@@ -46,7 +49,8 @@ class Login extends Component {
                         required: true,
                         minLength: 6,
                         same: true
-                    }
+                    },
+                    errorMessage: "Not matching passwords"
                 },
             },
         isFormValid: false,
@@ -94,7 +98,7 @@ class Login extends Component {
                     <form onSubmit={this.authHandler}>
                         {errorMessage}
                         <div>
-                            <h4>Register new user</h4>
+                            <h2>Register new user</h2>
                             {formList}
                             <Button btnType="Success" disabled={!this.state.isFormValid}>SUBBMIT</Button>
                         </div>

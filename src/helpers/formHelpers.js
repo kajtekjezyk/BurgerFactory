@@ -2,7 +2,7 @@ import Input from "../components/UI/Input/Input";
 import React from 'react';
 
 
-export const makeInputField = (placeholderText, inputType="input") => {
+export const makeInputField = (placeholderText, label="", inputType="input") => {
     return {
         inputType: inputType,
             elementConfig: {
@@ -13,7 +13,8 @@ export const makeInputField = (placeholderText, inputType="input") => {
             required: true
         },
         valid : false,
-        touched: false
+        touched: false,
+        label: label
     }
 }
 
@@ -66,7 +67,9 @@ export const checkIfFormIsValid = (newFormElemets) => {
 
 export const generateForm = (formList, controls, inputChangedHandler) => {
     for (let input in controls) {
+        
         let inputData = controls[input];
+        console.log(inputData)
         formList.push(
         <Input
             key={input}
@@ -77,6 +80,8 @@ export const generateForm = (formList, controls, inputChangedHandler) => {
             invalid={!inputData['valid']}
             shouldValidate={Object.keys(inputData.validation).length}
             touched={inputData.touched}
+            label={inputData.label}
+            errorMessage={inputData.errorMessage}
         />)
     }
 }

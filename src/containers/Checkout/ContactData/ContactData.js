@@ -13,39 +13,43 @@ class ContactData extends Component {
     state = {
         orderForm: {
             name: {
-                ...makeInputField("Your Name"),
+                ...makeInputField("Your Name", "Name"),
                 value: this.props.userName,
                 validation: {
                     isNonNumeric: true,
                     required: true
                 },
                 touched: true,
-                valid: true
+                valid: true,
+                errorMessage: "Name is required"
             },
             email: {
-                ...makeInputField("Your Email"),
+                ...makeInputField("Your Email", "Email", "email"),
                 value: this.props.userEmail,
                 validation: {
                     required: true,
                     isEmail: true
                 },
                 touched: true,
-                valid: true
+                valid: true,
+                errorMessage: "Invalid Email"
             },
             street: {
-                ...makeInputField("Street"),
+                ...makeInputField("Street", "Address"),
+                errorMessage: "Address is required"
             },
             zipCode: {
-                ...makeInputField("Postal Code"),
+                ...makeInputField("Postal Code", "Zip-Code"),
                 validation: {
                     required: true,
                     minLength: 5,
                     maxLength: 6,
                     isZip: true
-                }
+                },
+                errorMessage: "Invalid postal code: example 01-111"
             },
             burgerName: {
-                ...makeInputField("Type Burger Name"),
+                ...makeInputField("Type Burger Name", "Burger Name"),
                 validation: {},
                 touched: true,
                 valid: true,
@@ -56,6 +60,7 @@ class ContactData extends Component {
                 inputType: "select",
                 validation: {},
                 value: "Fastest",
+                label: "Delivery Method",
                 elementConfig: {
                    options:  [
                     {value: "Fastest", displayValue: "Fastest"},

@@ -25,7 +25,9 @@ const modifyBurger = (oldState, action, diff) => {
     const updatedIngredient = {[action.ingType]: oldState.ingredients[action.ingType] + diff};
     const updatedState = {
         ingredients: updateObject(oldState.ingredients, updatedIngredient),
-        totalPrice: roundMe(oldState.totalPrice + diff * INGREDIENT_PRICES[action.ingType])}
+        totalPrice: roundMe(oldState.totalPrice + diff * INGREDIENT_PRICES[action.ingType]),
+        burgerName: "My Burger"
+    }
     return updateObject(oldState, updatedState);
 }
 

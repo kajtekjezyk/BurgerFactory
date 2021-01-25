@@ -3,10 +3,14 @@ import classes from './Input.css';
 
 const input = (props) => {
     let inputElem = null;
+    let isError = false;
     const inputClasses = [classes.InputElement];
+    const labelClasses = [classes.Label];
 
     if (props.touched &&  props.shouldValidate && props.invalid) {
         inputClasses.push(classes.Invalid);
+        labelClasses.push(classes.Error);
+        isError = true;
     }
 
     switch (props.inputType) {
@@ -48,7 +52,7 @@ const input = (props) => {
     }
     return (
         <div className={classes.Input}>
-            <label className={classes.Label}>{props.label}</label>
+            <label className={labelClasses.join(" ")}>{isError ? props.errorMessage : `${props.label}:`}</label>
             {inputElem}
         </div>
     );
