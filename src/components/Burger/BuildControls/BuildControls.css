@@ -51,13 +51,22 @@
     }
 }
 
-@media (min-width: 600px) {
+@media (min-width: 600px ) and (max-width: 999px){
     .Container {
         width: 100%;
-        
         display: grid;
         grid-template-columns: auto auto;
         column-gap: 50px;
+        justify-content: center;
+    }
+}
+
+@media (min-width: 1000px ) {
+    .Container {
+        min-height: 60vh;
+        width: 100%;
+        display: grid;
+        grid-template-columns: auto;
         justify-content: center;
     }
 }

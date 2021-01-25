@@ -60,23 +60,23 @@ export class BurgerBuilder extends Component {
         if (this.props.ingredients)
         {
             burger = (
-                <div >
-                    <div className={classes.BurgerBuilder}>
+                <div className={classes.mainPanel}>
+                    <div className={[classes.BurgerBuilder, classes.Item].join(" ")}>
                         <Burger  ingredients={this.props.ingredients} clicked={this.props.removeIngredient}></Burger>
                     </div>
                     <IngredientContext.Provider value={{
                         add: this.props.addIngredient,
                         rem: this.props.removeIngredient
                     }}>
-                        
-                    <BuildControls
-                        ingredients={this.props.ingredients}
-                        disabled={disabledInfo}
-                        totalPrice={this.props.totalPrice}
-                        disableDisplay={!this.updatePurchaseState(this.props.ingredients)}
-                        isAuth={this.props.isAuthenticated}
-                        purchased={this.orderClickHandler}/>
-                        
+                    <div className={classes.Item}>   
+                        <BuildControls
+                            ingredients={this.props.ingredients}
+                            disabled={disabledInfo}
+                            totalPrice={this.props.totalPrice}
+                            disableDisplay={!this.updatePurchaseState(this.props.ingredients)}
+                            isAuth={this.props.isAuthenticated}
+                            purchased={this.orderClickHandler}/>
+                    </div>    
                     </IngredientContext.Provider>
                     
                 </div>

@@ -4,6 +4,15 @@
     height: 250px;
 }
 
+.Item {
+    border: 1px solid transparent;
+}
+
+.mainPanel {
+    display: grid;
+    grid-template-columns: 100%;
+}
+
 @media (min-width: 500px) {
     .BurgerBuilder {
         width: 450px;
@@ -14,8 +23,13 @@
 
 @media (min-width: 1000px) {
     .BurgerBuilder {
-        width: 900px;
-        height: 500px;
+        width: 100%;
+        min-height: 100%;
         box-sizing: border-box;
+    }
+
+    .mainPanel {
+        display: grid;
+        grid-template-columns: 50% 50%;
     }
 }

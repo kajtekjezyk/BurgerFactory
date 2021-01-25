@@ -19,7 +19,7 @@
 @media (min-width: 500px) and (min-height: 401px) {
     .Burger {
         width: 450px;
-        height: 450px;
+        height: 100%;
         box-sizing: border-box;
 
     }
@@ -27,8 +27,9 @@
 
 @media (min-width: 1000px) and (min-height: 700px) {
     .Burger {
+        background-color: black;
         width: 60%;
-        height: 600px;
+        height: 100%;
         box-sizing: border-box;
 
     }
