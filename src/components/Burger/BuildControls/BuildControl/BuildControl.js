@@ -13,12 +13,12 @@ const buildControl = (props) => {
             className={classes.Less}
             disabled={props.shouldDisable}
             onClick={() => ingredientContext.rem(props.type)}>
-                Less
+                -
             </button>
         <button
             className={classes.More}
             onClick={() => ingredientContext.add(props.type)}>
-                More
+                +
             </button>
         <label className={classes.Counter}>{props.elCount}</label>
     </div>);

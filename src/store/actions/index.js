@@ -12,4 +12,5 @@ export {purchaseBurgerStart,
 export {login,
         register,
         logOut,
-        authCheckState} from "./auth";
+        authCheckState,
+        modifyAddressData} from "./auth";

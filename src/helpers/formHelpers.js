@@ -69,7 +69,6 @@ export const generateForm = (formList, controls, inputChangedHandler) => {
     for (let input in controls) {
         
         let inputData = controls[input];
-        console.log(inputData)
         formList.push(
         <Input
             key={input}

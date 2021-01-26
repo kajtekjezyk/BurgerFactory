@@ -52,6 +52,20 @@ class Login extends Component {
                     },
                     errorMessage: "Not matching passwords"
                 },
+                street: {
+                    ...makeInputField("Street", "Address"),
+                    errorMessage: "Address is required"
+                },
+                zipCode: {
+                    ...makeInputField("Postal Code", "Zip-Code"),
+                    validation: {
+                        required: true,
+                        minLength: 5,
+                        maxLength: 6,
+                        isZip: true
+                    },
+                    errorMessage: "Invalid postal code: example 01-111"
+                },
             },
         isFormValid: false,
     };
@@ -69,9 +83,13 @@ class Login extends Component {
 
     authHandler = (event) => {
         event.preventDefault();
-        this.props.onAuth(this.state.controls.name.value,
-                          this.state.controls.email.value,
-                          this.state.controls.password.value);
+        this.props.onAuth({
+            name: this.state.controls.name.value,
+            email: this.state.controls.email.value,
+            password: this.state.controls.password.value,
+            address: this.state.controls.street.value,
+            zipCode: this.state.controls.zipCode.value
+        });
     }
 
     switchAuthModeHandler = () => {
@@ -133,7 +151,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAuth: (name, email, password) => dispatch(register(name, email, password))
+        onAuth: (person) => dispatch(register(person))
     }
 }
 

@@ -19,16 +19,14 @@ export class BurgerBuilder extends Component {
             return;
         this.props.resetPurchase();
         this.props.initBurger();
-
     }
 
     orderClickHandler = () => {
-        this.props.purchasing()
         if (this.props.isAuthenticated) {
+            this.props.purchasing()
         } else {
-            this.props.history.push('/auth');
-        }
-        
+            this.props.history.push('/login');
+        } 
     }
 
     purchaseCancelHandler = () => {
@@ -42,9 +40,9 @@ export class BurgerBuilder extends Component {
     }
 
     updatePurchaseState = (ingredients) =>{
-    return Object.keys(ingredients).some(elem => {
-        return ingredients[elem] > 0;
-    });
+        return Object.keys(ingredients).some(elem => {
+            return ingredients[elem] > 0;
+        });
     }
 
     render() {

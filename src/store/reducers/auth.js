@@ -7,19 +7,29 @@ const initialState = {
     error: null,
     loading: false,
     userEmail: null,
-    userName: null
+    userName: null,
+    address: null,
+    zipCode: null,
+    localUserId: null
 }
 
 const addUser = (state, action) => {
     const newState = {
-        token: action.idToken,
-        userId: action.userId,
+        token: action.user.token,
+        userId: action.user.userId,
         error: null,
         loading: false,
-        userEmail: action.userEmail,
-        userName: action.userName
+        userEmail: action.user.email,
+        userName: action.user.name,
+        address: action.user.address,
+        zipCode: action.user.zipCode,
+        localUserId: action.user.localUserId
     };
     return updateObject(state, newState);
+}
+
+const updateAddress = (state, action) => {
+    return updateObject(state, {address: action.address, zipCode: action.zipCode});
 }
 
 const mapErrortoErrorMessage = (error) => {
@@ -46,6 +56,7 @@ const authReducer = (state = initialState, action) => {
         case actionTypes.AUTH_SUCCESS: return addUser(state, action);
         case actionTypes.AUTH_FAIL: return updateObject(state, {loading: false, error: mapErrortoErrorMessage(action.error)});
         case actionTypes.LOG_OUT: return updateObject(state, initialState);
+        case actionTypes.UPDATE_ADDRESS: return updateAddress(state, action);
         default:
             return state;
     }

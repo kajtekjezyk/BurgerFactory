@@ -27,14 +27,19 @@ export const checkAuthTimeout = (expireTime) => {
     };
 };
 
-export const authSuccess = (idToken, userId, userEmail, name) => {
+export const authSuccess = (user) => {
     return{
         type: actionTypes.AUTH_SUCCESS,
-        idToken: idToken,
-        userId: userId,
-        userEmail: userEmail,
-        userName: name
+        user: user
     };
+};
+
+const updateAddress = (address, zipCode) => {
+    return {
+        type: actionTypes.UPDATE_ADDRESS,
+        address: address,
+        zipCode: zipCode
+    }
 };
 
 export const authFail = (error) => {
@@ -57,8 +62,10 @@ const setLocalStorage = (userData) => {
     localStorage.setItem('token', userData.idToken);
     localStorage.setItem('expirationDate', expirationDate);
     localStorage.setItem('userId', userData.localId);
-    localStorage.setItem('userEmail', userData.email);
-    localStorage.setItem('userName', userData.name);
+}
+
+const getQueryParams = (token, userId) => {
+    return '?auth=' + token + '&orderBy="id"&equalTo="' + userId +'"'
 }
 
 export const login = (email, password) => {
@@ -67,18 +74,26 @@ export const login = (email, password) => {
         dispatch(authStart());
         const URL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${Key}`;
         axios.post(URL, generateQueryUserData(email, password)).then(response => {
-            
             dispatch(checkAuthTimeout(response.data.expiresIn));
             registerData = response.data;
-            const queryParams = '?auth=' + response.data.idToken + '&orderBy="id"&equalTo="' + response.data.localId +'"';
-            return axiosOrders.get('/users.json' + queryParams);
+            setLocalStorage(registerData);
+            return axiosOrders.get('/users.json' + getQueryParams(response.data.idToken, response.data.localId));
         }).then(response => {
-            let name = null;
+            let userData = null;
+            let localUserId = null;
             for (let key in response.data) {
-                name = response.data[key].name;
+                userData = response.data[key];
+                localUserId = key;
             }
-                setLocalStorage({...registerData, name: name});
-                dispatch(authSuccess(registerData.idToken, registerData.localId, registerData.email, name));
+                dispatch(authSuccess({
+                    localUserId: localUserId,
+                    token: registerData.idToken,
+                    userId: registerData.localId,
+                    address: userData.address,
+                    zipCode: userData.zipCode,
+                    name: userData.name,
+                    email: userData.email
+                }));
             })
             .catch(error => {
                 console.log(error)
@@ -87,23 +102,28 @@ export const login = (email, password) => {
     };
 }
 
-export const register = (name, email, password) => {
+export const register = (user) => {
     return dispatch => {
         let registerData = null;
         dispatch(authStart());
         const URL = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${Key}`
-        axios.post(URL, generateQueryUserData(email, password)).then(response => {
-            
+        axios.post(URL, generateQueryUserData(user.email, user.password)).then(response => {
             dispatch(checkAuthTimeout(response.data.expiresIn));
             registerData = response.data;
             const userData = {
-                name: name,
+                ...user,
                 id: response.data.localId,
                 email: response.data.email
             }
             return axiosOrders.post('/users.json?auth=' + registerData.idToken, userData)}).then(response => {
-                setLocalStorage({...registerData, name: name});
-                dispatch(authSuccess(registerData.idToken, registerData.localId, registerData.email, name));
+                setLocalStorage(registerData);
+                dispatch(authSuccess({
+                    ...user,
+                    localUserId: response.data.name,
+                    token: registerData.idToken,
+                    userId: registerData.localId
+                }
+                ));
             })
             .catch(error => {
                 console.log(error)
@@ -123,13 +143,43 @@ export const authCheckState = () => {
             if (expirationDate > new Date())
             {
                 const userId = localStorage.getItem('userId');
-                const userEmail = localStorage.getItem('userEmail');
-                const userName = localStorage.getItem('userName');
-                dispatch(authSuccess(token, userId, userEmail, userName));
-                dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
+                return axiosOrders.get('/users.json' + getQueryParams(token, userId)).then(response => {
+                    let userData = null;
+                    let localUserId = null;
+                    for (let key in response.data) {
+                        userData = response.data[key];
+                        localUserId = key;
+                    }
+                    dispatch(authSuccess({
+                        localUserId: localUserId,
+                        token: token,
+                        userId: userId,
+                        address: userData.address,
+                        zipCode: userData.zipCode,
+                        name: userData.name,
+                        email: userData.email 
+                    }));
+                    dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
+                })    
             } else {
                 dispatch(logOut());
             }
         }
     }
 }
+
+export const modifyAddressData = (address, zipCode) => {
+    return (dispatch, getState) => {
+        const token = getState().auth.token;
+        const userId = getState().auth.localUserId;
+        axiosOrders.patch(`/users/${userId}.json?auth=${token}`, {
+            address: address,
+            zipCode: zipCode
+        }).then(response => {
+            dispatch(updateAddress(address, zipCode))
+        }).catch(error => {
+            console.log(error)
+            dispatch(authFail(error.response.data.error));
+        })
+    };
+};
