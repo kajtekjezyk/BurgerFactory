@@ -25,7 +25,7 @@ const order = (props) => {
     })
 
     return (
-        <div className={classes.Order} >
+        <div className={classes.Order} hidden={props.hidden} >
             <div className={classes.OrderHeader}>
                 <h2>Burger name: {props.burgerName}</h2>
                 <Button btnType={"Load"} clicked={props.load}>Load</Button>

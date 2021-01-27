@@ -6,13 +6,14 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 import {connect} from 'react-redux';
 import { loadBurger, resetPurchase } from '../../store/actions/index';
-
+import classes from './Orders.css';
 
 class Orders extends Component {
 
     state =  {
         orders : [],
-        loading: true
+        loading: true,
+        searchValue: ""
     }
 
     componentWillUnmount = () => {
@@ -40,17 +41,43 @@ class Orders extends Component {
         });
     }
 
+    onSearch = (event) => {
+        event.preventDefault();
+        if (this.state.searchValue.trim().length === 0) return;
+        let modified = [...this.state.orders];
+        modified = modified.map(elem => {
+            if (elem.orderData.burgerName.includes(this.state.searchValue)) {
+                elem.hidden = false;
+            } else {
+                elem.hidden = true;
+            }
+            return elem;
+        });
+        this.setState({orders: modified});
+    }
+
+    onSearchChange = (event) => {
+        this.setState({searchValue: event.target.value});
+        if (event.target.value.trim().length === 0) {
+            let modified = [...this.state.orders];
+            modified = modified.map(elem => {
+                elem.hidden = false;
+                return elem;
+            });
+            this.setState({orders: modified});
+        }
+    }
+
     componentDidMount = () => {
         this.setState({loading: true});
         const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId +'"';
         Axios.get('/orders.json' + queryParams).then(response => {
-            // &equalTo=${this.props.userId}
-
             const fetchedOrders = [];
             for (let key in response.data) {
                 fetchedOrders.push({
                    ...response.data[key],
-                   id: key
+                   id: key,
+                   hidden: false
                 })
             }
             this.setState({orders: fetchedOrders, loading: false});
@@ -74,6 +101,7 @@ class Orders extends Component {
                             price={elem.price}
                             load={() => this.orderLoad(elem.price, elem.ingredients, elem.orderData.burgerName)}
                             remove={() => this.orderRemove(elem.id)}
+                            hidden={elem.hidden}
                         />
                     )})}
                 </Aux>
@@ -81,6 +109,15 @@ class Orders extends Component {
         }
         return (
             <div style={{marginTop: "120px"}}>
+                <form className={classes.BurgerSearch} onSubmit={this.onSearch}>
+                    <h3>Search by name</h3>
+                    <input
+                        onChange={this.onSearchChange}
+                        className={classes.Input}
+                        type="text"
+                        value={this.state.seaerchValue}/>
+                    <input className={classes.Button} type="submit" value="Search"/>
+                </form>
                 {orders}
             </div>
         );
