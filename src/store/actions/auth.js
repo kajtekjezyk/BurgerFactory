@@ -115,6 +115,7 @@ export const register = (user) => {
                 id: response.data.localId,
                 email: response.data.email
             }
+            delete(userData.password);
             return axiosOrders.post('/users.json?auth=' + registerData.idToken, userData)}).then(response => {
                 setLocalStorage(registerData);
                 dispatch(authSuccess({
