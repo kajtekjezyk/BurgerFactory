@@ -3,36 +3,24 @@ import BurgerIngredient from './BurgerIngredient/BurgerIngredient';
 import classes from './Burger.css';
 
 const burger = (props) => {
-    let isMeatSet = false;
-    const meatCount = props.ingredients['meat'];
-    let transformedIngredients = Object.keys(props.ingredients)
-        .map(ingredient => {
-            return [...Array(props.ingredients[ingredient])].map((_, index) => {
-                if (ingredient === 'meat')
-                {   
-                    if (isMeatSet) {
-                        return null;
-                    }
-                    isMeatSet = true;   
-                }
-                return <BurgerIngredient
-                            clicked={()=>props.clicked(ingredient)}
-                            key={ingredient + index}
-                            type={ingredient}
-                            meatCount={meatCount} />
-            });
-        })
-        transformedIngredients = transformedIngredients.reduce((arr, el) => {  
-            return arr.concat(el);
-        }, []);
-    
-    if (transformedIngredients.length === 0) {
-        transformedIngredients = <p>Please start Adding ingredients!</p>;
+
+    let transformedIngredientsCounter = props.burger.map((ingredient, index) => {
+        return (
+            <BurgerIngredient
+                    clicked={()=>props.clicked(ingredient.ingType, ingredient.key)}
+                    key={ingredient.ingType + index}
+                    type={ingredient.ingType}
+                    meatCount={ingredient.count}/>
+        );
+    });
+               
+    if (props.burger.length === 0) {
+        transformedIngredientsCounter = <p>Please start Adding ingredients!</p>;
     }
     return(
         <div className={classes.Burger}>
             <BurgerIngredient type='bread-top'/>
-            {transformedIngredients}
+            {transformedIngredientsCounter}
             <BurgerIngredient type='bread-bottom'/>
 
         </div>
@@ -42,6 +30,32 @@ const burger = (props) => {
 export default burger;
 
 
-// const ingredientsNum = transformedIngredients.reduce((elSum, elem) => {
-//     return elSum += elem.length;
-// },0);
+
+
+
+// let isMeatSet = false;
+//     const meatCount = props.ingredientsCounter['meat'];
+//     let transformedIngredientsCounter = Object.keys(props.ingredientsCounter)
+//         .map(ingredient => {
+//             return [...Array(props.ingredientsCounter[ingredient])].map((_, index) => {
+//                 if (ingredient === 'meat')
+//                 {   
+//                     if (isMeatSet) {
+//                         return null;
+//                     }
+//                     isMeatSet = true;   
+//                 }
+//                 return <BurgerIngredient
+//                             clicked={()=>props.clicked(ingredient)}
+//                             key={ingredient + index}
+//                             type={ingredient}
+//                             meatCount={meatCount} />
+//             });
+//         })
+//         transformedIngredientsCounter = transformedIngredientsCounter.reduce((arr, el) => {  
+//             return arr.concat(el);
+//         }, []);
+    
+//     if (transformedIngredientsCounter.length === 0) {
+//         transformedIngredientsCounter = <p>Please start Adding ingredients!</p>;
+//     }

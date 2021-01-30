@@ -10,10 +10,10 @@ const buildConntrols = (props) => {
         label = label.join("");
         return label;
     }
-    const controls = Object.keys(props.ingredients).map(elem =>{
+    const controls = Object.keys(props.ingredientsCounter).map(elem =>{
         return (
             <BuildControl
-                elCount={props.ingredients[elem]}
+                elCount={props.ingredientsCounter[elem]}
                 label={makeLabel(elem)}
                 key={elem}
                 type={elem}
@@ -36,7 +36,7 @@ const buildConntrols = (props) => {
 
 buildConntrols.propTypes = {
     disabled: PropTypes.object,
-    ingredients: PropTypes.object,
+    ingredientsCounter: PropTypes.object,
     totalPrice: PropTypes.number,
     disableDisplay: PropTypes.bool,
     purchased: PropTypes.func

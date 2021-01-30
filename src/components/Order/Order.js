@@ -5,12 +5,7 @@ import Button from '../UI/Button/Button';
 const order = (props) => {
     
     let IngredientArray = [];
-    for (let ingredient in props.ingredients) {
-        if(props.ingredients[ingredient] > 0) {
-            IngredientArray.push({name: ingredient, amount: props.ingredients[ingredient]});
-        }
-    }
-    IngredientArray = IngredientArray.map(elem => {
+    IngredientArray = props.burger.map(elem => {
         return <span 
                 style={{
                     padding: "5px",
@@ -19,8 +14,8 @@ const order = (props) => {
                     display: "inline-block",
                     border: "1px solid #ccc"
                 }}
-                key={elem.name}>
-                    {elem.name}: ({elem.amount})   
+                key={elem.key}>
+                    {elem.ingType}: ({elem.count})   
                 </span>
     })
 

@@ -20,9 +20,9 @@ class Orders extends Component {
         this.setState({orders: []});
     }
 
-    orderLoad = (price, ingredients, burgerName) => {
+    orderLoad = (price, ingredientsCounter, burger, burgerName) => {
         this.props.resetPurchase();
-        this.props.loadBurger(price, ingredients, burgerName);
+        this.props.loadBurger(price, ingredientsCounter, burger, burgerName);
         this.props.history.push("/");
     }
 
@@ -97,9 +97,9 @@ class Orders extends Component {
                         <Order
                             key={elem.id}
                             burgerName={elem.orderData.burgerName}
-                            ingredients={elem.ingredients}
+                            burger={elem.burger}
                             price={elem.price}
-                            load={() => this.orderLoad(elem.price, elem.ingredients, elem.orderData.burgerName)}
+                            load={() => this.orderLoad(elem.price, elem.ingredientsCounter, elem.burger, elem.orderData.burgerName)}
                             remove={() => this.orderRemove(elem.id)}
                             hidden={elem.hidden}
                         />
@@ -133,7 +133,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        loadBurger: (price, ingredients, burgerName) => dispatch(loadBurger(price, ingredients, burgerName)),
+        loadBurger: (price, ingredientsCounter, burger, burgerName) => dispatch(loadBurger(price, ingredientsCounter, burger, burgerName)),
         resetPurchase: () => dispatch(resetPurchase())
     };
 };

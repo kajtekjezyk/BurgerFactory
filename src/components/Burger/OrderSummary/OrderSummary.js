@@ -3,10 +3,10 @@ import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import Button from '../../UI/Button/Button'
 
 const orderSummary = (props) => {
-    const ingredientsSummary = Object.keys(props.ingredients).map(ingredinet => {
+    const ingredientsSummary = Object.keys(props.ingredientsCounter).map(ingredinet => {
         return (
             <li key={ingredinet}>
-                <span style={{textTransform: "capitalize"}}>{ingredinet}</span>: {props.ingredients[ingredinet]}
+                <span style={{textTransform: "capitalize"}}>{ingredinet}</span>: {props.ingredientsCounter[ingredinet]}
             </li>
         )
     });

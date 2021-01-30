@@ -3,7 +3,8 @@ export {addIngredient,
         initBurger,
         purchasing,
         stopPurchasing,
-        loadBurger} from "./burgerBuilder";
+        loadBurger,
+        removeByClicking} from "./burgerBuilder";
 
 export {purchaseBurgerStart,
         purchaseInit,

@@ -105,7 +105,8 @@ class ContactData extends Component {
         }
         if (formData['burgerName'] === "") formData['burgerName'] = this.state.orderForm.burgerName.defaultValue;
         const order = {
-            ingredients: this.props.ingredients,
+            ingredientsCounter: this.props.ingredientsCounter,
+            burger: this.props.burger,
             price: this.props.price,
             orderData: formData,
             userId: this.props.userId,
@@ -117,7 +118,6 @@ class ContactData extends Component {
         let result = true;
         result = this.state.orderForm.street.value === this.props.userAddress && result;
         result = this.state.orderForm.zipCode.value === this.props.userZipCode && result;
-        console.log()
         this.setState({hasAddressChanged: !result})
         return !result;
     }
@@ -173,7 +173,8 @@ class ContactData extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        ingredients: state.burger.ingredients,
+        ingredientsCounter: state.burger.ingredientsCounter,
+        burger: state.burger.burger,
         price: state.burger.totalPrice,
         loading: state.order.loading,
         token: state.auth.token,

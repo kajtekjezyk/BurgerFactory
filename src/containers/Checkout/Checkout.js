@@ -20,13 +20,14 @@ class Checkout extends Component {
 
     render() {
         let siteContent = <Redirect to={"/"}/>;
-        if (this.props.ingredients) {
+        if (this.props.ingredientsCounter) {
             const purhchasedRedirect = this.props.purchased ? <Redirect to="/"/> : null;
             siteContent = (
                 <Aux>
                     {purhchasedRedirect}
                     <CheckoutSummary
-                        ingredients={this.props.ingredients}
+                        ingredientsCounter={this.props.ingredientsCounter}
+                        burger={this.props.burger}
                         goBack={this.cancelClickHandler}
                         proceed={this.continueClickHandler}/>
                     <Route path='/checkout/contact-data' component={ContactData}/> 
@@ -50,7 +51,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = (state) => {
     return {
-        ingredients: state.burger.ingredients,
+        ingredientsCounter: state.burger.ingredientsCounter,
+        burger: state.burger.burger,
         purchased: state.order.purchased
     }
 }

@@ -15,10 +15,18 @@ export const removeIngredient = (ingType) => {
     };
 };
 
+export const removeByClicking = (ingType, key) => {
+    return {
+        type: actionTypes.REMOVE_BY_CLICKING,
+        ingType: ingType,
+        key: key
+    }
+}
+
 const initIngredints = (burger) => {
     return {
         type: actionTypes.INIT_BURGER,
-        burger: burger
+        ingredientsCounter: burger
     }
 }
 
@@ -50,11 +58,12 @@ export const initBurger = () => {
     }
 }
 
-export const loadBurger = (price, ingredients, burgerName) => {
+export const loadBurger = (price, ingredientsCounter, burger, burgerName) => {
     return {
         type: actionTypes.LOAD_BURGER,
-        burger: ingredients,
+        ingredientsCounter: ingredientsCounter,
         price: price,
+        burger: burger,
         burgerName: burgerName
     }
-}
+} 

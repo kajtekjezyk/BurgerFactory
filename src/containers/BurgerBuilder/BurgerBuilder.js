@@ -9,13 +9,15 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import {connect} from 'react-redux';
-import {resetPurchase, addIngredient, removeIngredient, initBurger, purchaseInit, purchasing, stopPurchasing} from '../../store/actions/index';
+import {resetPurchase, addIngredient, removeIngredient,
+        initBurger, purchaseInit, purchasing, stopPurchasing,
+        removeByClicking} from '../../store/actions/index';
 import classes from "./BurgerBuilder.css";
 
 export class BurgerBuilder extends Component {
     
     componentDidMount () {
-        if (this.props.ingredients && (this.props.purchasingStarted || !this.props.purchased))
+        if (this.props.ingredientsCounter && (this.props.purchasingStarted || !this.props.purchased))
             return;
         this.props.resetPurchase();
         this.props.initBurger();
@@ -39,15 +41,19 @@ export class BurgerBuilder extends Component {
         this.props.history.push("/checkout");
     }
 
-    updatePurchaseState = (ingredients) =>{
-        return Object.keys(ingredients).some(elem => {
-            return ingredients[elem] > 0;
+    updatePurchaseState = (ingredientsCounter) =>{
+        return Object.keys(ingredientsCounter).some(elem => {
+            return ingredientsCounter[elem] > 0;
         });
+    }
+
+    onClockRemoveHandler = (ingredient, id) => {
+        this.props.removeByClicking(ingredient, id);
     }
 
     render() {
         const disabledInfo = {
-            ...this.props.ingredients
+            ...this.props.ingredientsCounter
         };
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <= 0;
@@ -55,12 +61,12 @@ export class BurgerBuilder extends Component {
 
         let orderSummary = null;
         let burger = this.props.error ? <p>Ingredients couldn't be loaded</p> : <Spinner/>;
-        if (this.props.ingredients)
+        if (this.props.ingredientsCounter)
         {
             burger = (
                 <div className={classes.mainPanel}>
                     <div className={[classes.BurgerBuilder, classes.Item].join(" ")}>
-                        <Burger  ingredients={this.props.ingredients} clicked={this.props.removeIngredient}></Burger>
+                        <Burger burger={this.props.burger} clicked={this.onClockRemoveHandler}></Burger>
                     </div>
                     <IngredientContext.Provider value={{
                         add: this.props.addIngredient,
@@ -68,10 +74,10 @@ export class BurgerBuilder extends Component {
                     }}>
                     <div className={classes.Item}>   
                         <BuildControls
-                            ingredients={this.props.ingredients}
+                            ingredientsCounter={this.props.ingredientsCounter}
                             disabled={disabledInfo}
                             totalPrice={this.props.totalPrice}
-                            disableDisplay={!this.updatePurchaseState(this.props.ingredients)}
+                            disableDisplay={!this.updatePurchaseState(this.props.ingredientsCounter)}
                             isAuth={this.props.isAuthenticated}
                             purchased={this.orderClickHandler}/>
                     </div>    
@@ -83,7 +89,7 @@ export class BurgerBuilder extends Component {
                 <OrderSummary
                     calcelOrder={this.purchaseCancelHandler}
                     finOrder={this.purchaseContinueHandler}
-                    ingredients={this.props.ingredients}
+                    ingredientsCounter={this.props.ingredientsCounter}
                     price={this.props.totalPrice}/>
             );
         }
@@ -106,19 +112,20 @@ const mapDispatchtoProps = (dispatch) => {
        purchaseInit: () => dispatch(purchaseInit()),
        purchasing: () => dispatch(purchasing()),
        stopPurchasing: () => dispatch(stopPurchasing()),
-       resetPurchase: ()=>dispatch(resetPurchase())
-       
+       resetPurchase: ()=>dispatch(resetPurchase()),
+       removeByClicking: (ingType, key) => dispatch(removeByClicking(ingType, key))
     };
 }
 
 const mapStatetoProps = (state) => {
     return {
-        ingredients: state.burger.ingredients,
+        ingredientsCounter: state.burger.ingredientsCounter,
         totalPrice: state.burger.totalPrice,
         error: state.burger.error,
         purchasingStarted: state.burger.purchasing,
         isAuthenticated: state.auth.token !== null,
         purchased: state.order.purchased,
+        burger: state.burger.burger
     };
 }
 
