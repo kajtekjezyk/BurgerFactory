@@ -7,3 +7,21 @@
     top: 0;
     background-color: rgba(0, 0, 0, 0.5);
 }
+
+.SliderEnter {
+    opacity: 0;
+}
+
+.SliderEnterActive {
+    opacity: 1;
+    transition: opacity 0.4s ease-out;
+}
+
+.SliderExit {
+    opacity: 1;
+}
+
+.SliderExitActive {
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
+}

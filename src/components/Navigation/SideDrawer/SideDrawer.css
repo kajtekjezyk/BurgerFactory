@@ -19,11 +19,11 @@
 }
 
 .Open {
-    transform: translateX(0);
+    animation: openSideDrawer 0.3s ease-out forwards;
 }
 
 .Close {
-    transform: translateX(-100%);
+    animation: closeSideDrawer 0.3s ease-out forwards;
 }
 
 .Logo {
@@ -32,3 +32,38 @@
     text-align: center;
 }
 
+@keyframes openSideDrawer {
+    0% {
+        opacity: 0;
+        /* transform: translateX(-100%); */
+    }
+
+    50% {
+        opacity: 1;
+        transform: scaleX(1.2);
+        /* transform: translateX(20%); */
+    }
+
+    100% {
+        opacity: 1;
+        /* transform: translateX(0%); */
+    }
+}
+
+@keyframes closeSideDrawer {
+    0% {
+        opacity: 1;
+        transform: translateX(0%);
+        
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(20%);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
