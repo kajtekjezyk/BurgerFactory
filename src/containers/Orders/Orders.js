@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Order from '../../components/Order/Order';
 import Axios from '../../axios-orders';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
@@ -7,21 +7,15 @@ import Aux from '../../hoc/Auxiliary/Auxiliary';
 import {connect} from 'react-redux';
 
 
-class Orders extends Component {
+const orders = (props) => {
 
-    state =  {
-        orders : [],
-        loading: true
-    }
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const {token, userId} = props;
 
-    componentWillUnmount = () => {
-        this.setState({orders: []});
-    }
-
-    componentDidMount = () => {
-        const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId +'"';
+    useEffect(()=> {
+        const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId +'"';
         Axios.get('/orders.json' + queryParams).then(response => {
-            // &equalTo=${this.props.userId}
 
             const fetchedOrders = [];
             for (let key in response.data) {
@@ -30,19 +24,23 @@ class Orders extends Component {
                    id: key
                 })
             }
-            this.setState({orders: fetchedOrders, loading: false});
+            setOrders(fetchedOrders);
+            setLoading(false);
             
         }).catch(error => {
-            this.setState({loading: false});
-            
+            setLoading(false);    
         });
-    }
-    render() {
-        let orders = <Spinner />;
-        if (!this.state.loading){
-            orders = (
+
+        return () => {
+            setOrders([]);
+        }
+    }, [token, userId]);
+
+    let ordersToShow = <Spinner />;
+        if (!loading){
+            ordersToShow = (
                 <Aux>
-                    {this.state.orders.map(elem => (
+                    {orders.map(elem => (
                         <Order 
                             key={elem.id}
                             ingredients={elem.ingredients}
@@ -52,12 +50,12 @@ class Orders extends Component {
                 </Aux>
             )
         }
-        return (
-            <div style={{marginTop: "120px"}}>
-                {orders}
-            </div>
-        );
-    }
+
+    return  (
+        <div style={{marginTop: "120px"}}>
+            {ordersToShow}
+        </div>
+    );
 }
 
 const mapStateToProps = (state) => {
@@ -67,4 +65,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(withErrorHandler(Orders, Axios));
+export default connect(mapStateToProps)(withErrorHandler(orders, Axios));
