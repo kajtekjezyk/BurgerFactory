@@ -1,18 +1,37 @@
 .BurgerSearch {
     text-align: center;
+    display: block;
 }
 
 .Input {
     border: none;
-    /* height: 20px; */
     margin-bottom: 15px;
     font-size: large;
     padding: 10px;
 }
 
-.Button {
-    font-size: large;
-    padding: 10px;
-    margin-bottom: 15px;
+.Label {
+    justify-self: end;
+    margin-bottom: 20px;
+    margin-right: 0;
+}
+
+@media (min-width: 500px) {
+    .BurgerSearch {
+        width: 80%;
+        display: grid;
+        grid-template-columns: 75% 25%;
+    }
+
+    .Input {
+        width: 100%;
+        font-size: large;
+        margin: 15px 0;
+        padding: 0 10px;
+    }
+
+    .Label {
+        margin-right: 20px;
+    }
 
 }

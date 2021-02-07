@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import Order from '../../components/Order/Order';
 import Axios from '../../axios-orders';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
@@ -8,69 +8,15 @@ import {connect} from 'react-redux';
 import { loadBurger, resetPurchase } from '../../store/actions/index';
 import classes from './Orders.css';
 
-class Orders extends Component {
-
-    state =  {
-        orders : [],
-        loading: true,
-        searchValue: ""
-    }
-
-    componentWillUnmount = () => {
-        this.setState({orders: []});
-    }
-
-    orderLoad = (price, ingredientsCounter, burger, burgerName) => {
-        this.props.resetPurchase();
-        this.props.loadBurger(price, ingredientsCounter, burger, burgerName);
-        this.props.history.push("/");
-    }
-
-    orderRemove = (id) => {
-        this.setState({loading: true});
-        Axios.delete(`/orders/${id}.json?auth=${this.props.token}`).then(response=> {
-            this.setState((prevState) => {
-                return {
-                    orders: prevState.orders.filter(elem => elem.id !== id),
-                    loading: false
-                }
-                    
-            })
-        }).catch(error => {
-            this.setState({loading: false});
-        });
-    }
-
-    onSearch = (event) => {
-        event.preventDefault();
-        if (this.state.searchValue.trim().length === 0) return;
-        let modified = [...this.state.orders];
-        modified = modified.map(elem => {
-            if (elem.orderData.burgerName.includes(this.state.searchValue)) {
-                elem.hidden = false;
-            } else {
-                elem.hidden = true;
-            }
-            return elem;
-        });
-        this.setState({orders: modified});
-    }
-
-    onSearchChange = (event) => {
-        this.setState({searchValue: event.target.value});
-        if (event.target.value.trim().length === 0) {
-            let modified = [...this.state.orders];
-            modified = modified.map(elem => {
-                elem.hidden = false;
-                return elem;
-            });
-            this.setState({orders: modified});
-        }
-    }
-
-    componentDidMount = () => {
-        this.setState({loading: true});
-        const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId +'"';
+const Orders = props => {
+    const inputRef = useRef();
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchValue, setSearchValue] = useState("");
+    
+    useEffect(()=> {
+        setLoading(true);
+        const queryParams = '?auth=' + props.token + '&orderBy="userId"&equalTo="' + props.userId +'"';
         Axios.get('/orders.json' + queryParams).then(response => {
             const fetchedOrders = [];
             for (let key in response.data) {
@@ -80,49 +26,103 @@ class Orders extends Component {
                    hidden: false
                 })
             }
-            this.setState({orders: fetchedOrders, loading: false});
-            
+            setOrders(fetchedOrders);
+            setLoading(false);  
         }).catch(error => {
-            this.setState({loading: false});
-            
+            setLoading(false);
         });
+        return setOrders([]);
+    }, [props.token, props.userId])
+
+    const ShowAll = useCallback((ordersToModify) => {
+        ordersToModify = ordersToModify.map(elem => {
+            elem.hidden = false;
+            return elem;
+        });
+    }, [])
+
+    const filterOrders = useCallback((ordersToModify) => {
+        ordersToModify = ordersToModify.map(elem => {
+            if (elem.orderData.burgerName.includes(searchValue)) {
+                elem.hidden = false;
+            } else {
+                elem.hidden = true;
+            }
+            return elem;
+        });
+    } , [searchValue])
+
+    useEffect(()=> {
+        const timer = setTimeout(() => {
+            if (searchValue === inputRef.current.value) {
+                let modified = [...orders];
+                if (searchValue.length === 0) {
+                    ShowAll(modified);
+                } else {
+                    filterOrders(modified);
+                }
+                setOrders(modified);
+            }
+          }, 500);
+          return () => {
+            clearTimeout(timer);
+          }
+    }, [searchValue, inputRef, orders])
+
+    const orderLoad = useCallback((price, ingredientsCounter, burger, burgerName) => {
+        props.resetPurchase();
+        props.loadBurger(price, ingredientsCounter, burger, burgerName);
+        props.history.push("/");
+    },[])
+
+    const orderRemove = useCallback((id) => {
+        setLoading(true);
+        Axios.delete(`/orders/${id}.json?auth=${props.token}`).then(response=> {
+            setLoading(false);
+            setOrders((prevOrders) => {
+                return prevOrders.filter(elem => elem.id !== id);
+            });
+        }).catch(error => {
+            setLoading(false);
+        });
+    }, [props.token, orders])
+
+    let outOrders = <Spinner />;
+    if (!loading) {
+        outOrders = (
+            <Aux>
+                {orders.map(elem => {
+                    return (
+                    <Order
+                        key={elem.id}
+                        burgerName={elem.orderData.burgerName}
+                        burger={elem.burger}
+                        price={elem.price}
+                        load={() => orderLoad(elem.price, elem.ingredientsCounter, elem.burger, elem.orderData.burgerName)}
+                        remove={() => orderRemove(elem.id)}
+                        hidden={elem.hidden}
+                    />
+                )})}
+            </Aux>
+        )
     }
-    render() {
-        let orders = <Spinner />;
-        if (!this.state.loading){
-            orders = (
-                <Aux>
-                    {this.state.orders.map(elem => {
-                        return (
-                        <Order
-                            key={elem.id}
-                            burgerName={elem.orderData.burgerName}
-                            burger={elem.burger}
-                            price={elem.price}
-                            load={() => this.orderLoad(elem.price, elem.ingredientsCounter, elem.burger, elem.orderData.burgerName)}
-                            remove={() => this.orderRemove(elem.id)}
-                            hidden={elem.hidden}
-                        />
-                    )})}
-                </Aux>
-            )
-        }
-        return (
-            <div style={{marginTop: "120px"}}>
-                <form className={classes.BurgerSearch} onSubmit={this.onSearch}>
-                    <h3>Search by name</h3>
-                    <input
-                        onChange={this.onSearchChange}
-                        className={classes.Input}
-                        type="text"
-                        value={this.state.seaerchValue}/>
-                    <input className={classes.Button} type="submit" value="Search"/>
-                </form>
-                {orders}
+
+    return (
+        <div style={{marginTop: "120px"}}>
+            <div className={classes.BurgerSearch}>
+                <h3 className={classes.Label}>Search by name</h3>
+                <input
+                    ref={inputRef}
+                    onChange={(event) => setSearchValue(event.target.value)}
+                    className={classes.Input}
+                    type="text"
+                    value={searchValue}/>
             </div>
-        );
-    }
+            {outOrders}
+        </div>
+    );
 }
+
 
 const mapStateToProps = (state) => {
     return {
