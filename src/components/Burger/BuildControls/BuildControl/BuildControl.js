@@ -11,12 +11,13 @@ const buildControl = (props) => {
         <div className={classes.Label}>{props.label}</div>
         <button
             className={classes.Less}
-            disabled={props.shouldDisable}
+            disabled={props.shouldDisableLess}
             onClick={() => ingredientContext.rem(props.type)}>
                 -
             </button>
         <button
             className={classes.More}
+            disabled={props.shouldDisableMore}
             onClick={() => ingredientContext.add(props.type)}>
                 +
             </button>

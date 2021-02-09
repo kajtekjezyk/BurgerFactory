@@ -12,10 +12,11 @@ import {connect} from 'react-redux';
 import {resetPurchase, addIngredient, removeIngredient,
         initBurger, purchaseInit, purchasing, stopPurchasing,
         removeByClicking} from '../../store/actions/index';
+import {MAX_INGREDIENT_VAL} from '../../constants/burgerBuilderConstants';
 import classes from "./BurgerBuilder.css";
 
 export class BurgerBuilder extends Component {
-    
+
     componentDidMount () {
         if (this.props.ingredientsCounter && (this.props.purchasingStarted || !this.props.purchased))
             return;
@@ -28,7 +29,7 @@ export class BurgerBuilder extends Component {
             this.props.purchasing()
         } else {
             this.props.history.push('/login');
-        } 
+        }
     }
 
     purchaseCancelHandler = () => {
@@ -51,14 +52,27 @@ export class BurgerBuilder extends Component {
         this.props.removeByClicking(ingredient, id);
     }
 
-    render() {
+    disableLessButton = () => {
         const disabledInfo = {
             ...this.props.ingredientsCounter
         };
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <= 0;
         }
+        return disabledInfo
+    }
 
+    disableMoreButton = () => {
+        const disabledInfo = {
+            ...this.props.ingredientsCounter
+        };
+        for (let key in disabledInfo) {
+            disabledInfo[key] = disabledInfo[key] >= MAX_INGREDIENT_VAL[key];
+        }
+        return disabledInfo
+    }
+
+    render() {
         let orderSummary = null;
         let burger = this.props.error ? <p>Ingredients couldn't be loaded</p> : <Spinner/>;
         if (this.props.ingredientsCounter)
@@ -72,17 +86,18 @@ export class BurgerBuilder extends Component {
                         add: this.props.addIngredient,
                         rem: this.props.removeIngredient
                     }}>
-                    <div className={classes.Item}>   
+                    <div className={classes.Item}>
                         <BuildControls
                             ingredientsCounter={this.props.ingredientsCounter}
-                            disabled={disabledInfo}
+                            disabledLess={this.disableLessButton()}
+                            disabledMore={this.disableMoreButton()}
                             totalPrice={this.props.totalPrice}
                             disableDisplay={!this.updatePurchaseState(this.props.ingredientsCounter)}
                             isAuth={this.props.isAuthenticated}
                             purchased={this.orderClickHandler}/>
-                    </div>    
+                    </div>
                     </IngredientContext.Provider>
-                    
+
                 </div>
             )
             orderSummary = (
@@ -101,7 +116,7 @@ export class BurgerBuilder extends Component {
                     {burger}
             </Aux>
         );
-    } 
+    }
 }
 
 const mapDispatchtoProps = (dispatch) => {

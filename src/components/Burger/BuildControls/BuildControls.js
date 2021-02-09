@@ -17,7 +17,8 @@ const buildConntrols = (props) => {
                 label={makeLabel(elem)}
                 key={elem}
                 type={elem}
-                shouldDisable={props.disabled[elem]}></BuildControl>
+                shouldDisableLess={props.disabledLess[elem]}
+                shouldDisableMore={props.disabledMore[elem]}></BuildControl>
         );
     });
     return (

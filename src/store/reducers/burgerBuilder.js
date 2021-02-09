@@ -1,5 +1,6 @@
 import * as actionTypes from "../actions/actionTypes";
 import {updateObject} from "../utility";
+import {INGREDIENT_PRICES} from '../../constants/burgerBuilderConstants';
 
 const initialState = {
     ingredientsCounter: null,
@@ -11,14 +12,6 @@ const initialState = {
     operationCounter: 0
 }
 
-const INGREDIENT_PRICES = {
-    onion: 0.1,
-    salad: 0.5,
-    cheese: 0.4,
-    meat: 1.3,
-    bacon: 0.7,
-    tomato: 0.3
-}
 const roundMe = (price) => {
     return +price.toFixed(2);
 }
@@ -30,7 +23,7 @@ const createIngredientObject = (oldState, action) => {
         ingType: action.ingType,
         count: 1});
     return updatedBurger
-} 
+}
 
 const modifyMeat = (burger, index, diff) => {
     const updatedBurger = [...burger];
@@ -58,7 +51,7 @@ const cleanAfterRemoval = (burger) => {
 
 const addElementToBurger = (oldState, action) => {
     const lastBurgerElem = oldState.burger.length - 1;
-    if (oldState.burger.length > 0 && 
+    if (oldState.burger.length > 0 &&
         isMeatChangeNeedded(action.ingType, oldState.burger[lastBurgerElem].ingType)) {
         return modifyMeat(oldState.burger, lastBurgerElem ,1);
     } else {
@@ -141,10 +134,10 @@ const initBurger = (state, action) => {
 
 const loadBurger = (state, action) => {
     const updatedElements = {
-        error: false, 
+        error: false,
         purchasing: false,
         ingredientsCounter: action.ingredientsCounter,
-        totalPrice: action.price, 
+        totalPrice: action.price,
         burgerName: action.burgerName,
         burger: action.burger
     };
