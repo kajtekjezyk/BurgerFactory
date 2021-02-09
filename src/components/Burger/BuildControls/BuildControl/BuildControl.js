@@ -7,27 +7,29 @@ const buildControl = (props) => {
 
     const ingredientContext = useContext(IngredientContext);
     return (
-    <div className={classes.BuildControl}>
-        <div className={classes.Label}>{props.label}</div>
-        <button
-            className={classes.Less}
-            disabled={props.shouldDisableLess}
-            onClick={() => ingredientContext.rem(props.type)}>
-                -
-            </button>
-        <button
-            className={classes.More}
-            disabled={props.shouldDisableMore}
-            onClick={() => ingredientContext.add(props.type)}>
-                +
-            </button>
-        <label className={classes.Counter}>{props.elCount}</label>
-    </div>);
+        <div className={classes.BuildControl}>
+            <div className={classes.Label}>{props.label}</div>
+            <button
+                className={classes.Less}
+                disabled={props.shouldDisableLess}
+                onClick={() => ingredientContext.rem(props.type)}>
+                    -
+                </button>
+            <button
+                className={classes.More}
+                disabled={props.shouldDisableMore}
+                onClick={() => ingredientContext.add(props.type)}>
+                    +
+                </button>
+            <label className={classes.Counter}>{props.elCount}</label>
+        </div>
+    );
 };
 
 buildControl.propTypes = {
     label: PropTypes.string,
-    disabled: PropTypes.bool,
+    shouldDisableLess: PropTypes.bool,
+    shouldDisableMore: PropTypes.bool,
     rem: PropTypes.func,
     add: PropTypes.func
 }

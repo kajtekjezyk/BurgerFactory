@@ -1,12 +1,11 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import classes from './Order.css';
 import Button from '../UI/Button/Button';
 import Burger from '../Burger/Burger';
 
 const order = (props) => {
 
-    let IngredientArray = [];
-    IngredientArray = props.burger.map(elem => {
+    let IngredientArray = useMemo(() => props.burger.map(elem => {
         return <span
                 style={{
                     padding: "5px",
@@ -18,7 +17,7 @@ const order = (props) => {
                 key={elem.key}>
                     {elem.ingType}: ({elem.count})
                 </span>
-    })
+    }), [props.burger]);
 
     return (
         <div className={classes.Order} hidden={props.hidden} >

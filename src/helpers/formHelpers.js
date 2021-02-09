@@ -1,14 +1,13 @@
-import Input from "../components/UI/Input/Input";
+import Input from '../components/UI/Input/Input';
 import React from 'react';
 
-
-export const makeInputField = (placeholderText, label="", inputType="input") => {
+export const makeInputField = (placeholderText, label='', inputType='input') => {
     return {
         inputType: inputType,
             elementConfig: {
                 placeholder: placeholderText,
             },
-        value: "",
+        value: '',
         validation: {
             required: true
         },
@@ -23,7 +22,7 @@ export const checkValidity = (value, rules, pass=null) => {
     if (!rules) {
         return true;
     }
-    
+
     if (rules.required) {
         isValid = value.trim() !== '' && isValid;
     }
@@ -67,14 +66,14 @@ export const checkIfFormIsValid = (newFormElemets) => {
 
 export const generateForm = (formList, controls, inputChangedHandler) => {
     for (let input in controls) {
-        
+
         let inputData = controls[input];
         formList.push(
         <Input
             key={input}
-            inputType={inputData["inputType"]}
-            elementConfig={inputData["elementConfig"]}
-            value={inputData["value"]}
+            inputType={inputData['inputType']}
+            elementConfig={inputData['elementConfig']}
+            value={inputData['value']}
             changed={(event) => inputChangedHandler(event, input)}
             invalid={!inputData['valid']}
             shouldValidate={Object.keys(inputData.validation).length}

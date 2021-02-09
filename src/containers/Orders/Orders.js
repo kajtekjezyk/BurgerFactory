@@ -12,8 +12,8 @@ const Orders = props => {
     const inputRef = useRef();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [searchValue, setSearchValue] = useState("");
-    
+    const [searchValue, setSearchValue] = useState('');
+
     useEffect(()=> {
         setLoading(true);
         const queryParams = '?auth=' + props.token + '&orderBy="userId"&equalTo="' + props.userId +'"';
@@ -27,7 +27,7 @@ const Orders = props => {
                 })
             }
             setOrders(fetchedOrders);
-            setLoading(false);  
+            setLoading(false);
         }).catch(error => {
             setLoading(false);
         });
@@ -72,7 +72,7 @@ const Orders = props => {
     const orderLoad = useCallback((price, ingredientsCounter, burger, burgerName) => {
         props.resetPurchase();
         props.loadBurger(price, ingredientsCounter, burger, burgerName);
-        props.history.push("/");
+        props.history.push('/');
     },[])
 
     const orderRemove = useCallback((id) => {
@@ -108,21 +108,20 @@ const Orders = props => {
     }
 
     return (
-        <div style={{marginTop: "120px"}}>
+        <div style={{marginTop: '120px'}}>
             <div className={classes.BurgerSearch}>
                 <h3 className={classes.Label}>Search by name</h3>
                 <input
                     ref={inputRef}
                     onChange={(event) => setSearchValue(event.target.value)}
                     className={classes.Input}
-                    type="text"
+                    type='text'
                     value={searchValue}/>
             </div>
             {outOrders}
         </div>
     );
 }
-
 
 const mapStateToProps = (state) => {
     return {
@@ -133,10 +132,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        loadBurger: (price, ingredientsCounter, burger, burgerName) => dispatch(loadBurger(price, ingredientsCounter, burger, burgerName)),
+        loadBurger: (price, ingredientsCounter, burger, burgerName) =>
+            dispatch(loadBurger(price, ingredientsCounter, burger, burgerName)),
         resetPurchase: () => dispatch(resetPurchase())
     };
 };
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, Axios));

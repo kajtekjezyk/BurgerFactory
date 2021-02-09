@@ -15,21 +15,3 @@
         box-sizing: border-box;
     }
 }
-
-/* @media (min-width: 500px) and (min-height: 401px) {
-    .Burger {
-        width: 80%;
-        height: 100%;
-        box-sizing: border-box;
-
-    }
-}
-
-@media (min-width: 1000px) and (min-height: 700px) {
-    .Burger {
-        width: 80%;
-        height: 100%;
-        box-sizing: border-box;
-
-    }
-} */
