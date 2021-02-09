@@ -13,11 +13,57 @@
     justify-self: center;
 }
 
-@media(min-width: 600px) {
+.OrderDetails {
+    margin-top: 5px;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-areas:
+    "Burger"
+    "Ingredients"
+    "Price";
+}
+
+.Ingredients {
+    grid-area: Ingredients;
+    height: 108px;
+    margin-top: 10px;
+    border-top: 2px dashed grey;
+    overflow: auto;
+    margin: 0;
+}
+
+.Price {
+    grid-area: Price;
+    margin: 0;
+    height: 30px;
+    text-align: center;
+}
+
+.Burger {
+    grid-area: Burger;
+    height: 150px;
+    width: 200px;
+    margin: auto;
+    text-align: center;
+    overflow: auto;
+}
+
+@media(min-width: 800px) {
     .OrderHeader {
         display: grid;
         grid-template-columns: 50% 25% 25%;
         padding-right: 10px;
     }
-}
+    .OrderDetails {
+        display: grid;
+        grid-template-columns: 200px auto;
+        height: 150px;
+        grid-template-areas:
+        "Burger Ingredients"
+        "Burger Price";
+    }
 
+    .Price {
+        text-align: left;
+    }
+}

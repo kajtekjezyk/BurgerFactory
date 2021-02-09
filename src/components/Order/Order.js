@@ -1,12 +1,13 @@
 import React from 'react';
 import classes from './Order.css';
 import Button from '../UI/Button/Button';
+import Burger from '../Burger/Burger';
 
 const order = (props) => {
-    
+
     let IngredientArray = [];
     IngredientArray = props.burger.map(elem => {
-        return <span 
+        return <span
                 style={{
                     padding: "5px",
                     margin: "10px",
@@ -15,7 +16,7 @@ const order = (props) => {
                     border: "1px solid #ccc"
                 }}
                 key={elem.key}>
-                    {elem.ingType}: ({elem.count})   
+                    {elem.ingType}: ({elem.count})
                 </span>
     })
 
@@ -26,8 +27,17 @@ const order = (props) => {
                 <Button btnType={"Load"} clicked={props.load}>Load</Button>
                 <Button btnType={"Remove"} clicked={props.remove}>Remove</Button>
             </div>
-            <p>Ingredients: {IngredientArray}</p>
-            <p>Price: <strong>{props.price}$</strong></p>
+            <div className={classes.OrderDetails}>
+                <div className={classes.Burger}>
+                    <Burger burger={props.burger} clicked={()=>{return;}}/>
+                </div>
+                <div className={classes.OrderSummary}>
+                    <p className={classes.Price}>Price: <strong>{props.price}$</strong></p>
+                    <p className={classes.Ingredients}>Ingredients: {IngredientArray}</p>
+                </div>
+
+            </div>
+
         </div>
     );
 }
