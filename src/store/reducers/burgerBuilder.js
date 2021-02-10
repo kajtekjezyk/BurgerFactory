@@ -12,7 +12,7 @@ const initialState = {
     operationCounter: 0
 }
 
-const roundMe = (price) => {
+export const roundMe = (price) => {
     return +price.toFixed(2);
 }
 
@@ -33,7 +33,7 @@ const modifyMeat = (burger, index, diff) => {
     return updatedBurger;
 }
 
-const isMeatChangeNeedded = (currentIngredient, lastIngredient) => {
+export const isMeatChangeNeedded = (currentIngredient, lastIngredient) => {
     return currentIngredient === "meat" && lastIngredient === "meat";
 }
 

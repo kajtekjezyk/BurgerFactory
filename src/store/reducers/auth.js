@@ -33,21 +33,19 @@ const updateAddress = (state, action) => {
 }
 
 const mapErrortoErrorMessage = (error) => {
-    let resp = null;
     const map = {
         EMAIL_NOT_FOUND: "No such user",
         INVALID_PASSWORD: "Please verify your password",
-        USER_DISABLED: "unable to login - user disabled",
-        EMAIL_EXISTS: "user with such email is already registered",
-        OPERATION_NOT_ALLOWED: "OPERATION_NOT_ALLOWED",
-        TOO_MANY_ATTEMPTS_TRY_LATER: "TOO_MANY_ATTEMPTS_TRY_LATER"
+        USER_DISABLED: "Unable to login - user disabled",
+        EMAIL_EXISTS: "User with such email is already registered",
+        OPERATION_NOT_ALLOWED: "Operation not allowed",
+        TOO_MANY_ATTEMPTS_TRY_LATER: "Too many attempts try later"
     }
-    try{
-        resp = map[error.message];
-    } catch (e) {
-        resp = error.message;
+    if (error.message in map) {
+        return map[error.message]
+    } else {
+        return error.message;
     }
-    return resp;
 }
 
 const authReducer = (state = initialState, action) => {
