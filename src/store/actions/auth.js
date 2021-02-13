@@ -68,7 +68,7 @@ const getQueryParams = (token, userId) => {
     return '?auth=' + token + '&orderBy="id"&equalTo="' + userId +'"'
 }
 
-export const login = (email, password) => {
+export const onLogin = (email, password) => {
     return dispatch => {
         let registerData = null;
         dispatch(authStart());
@@ -102,7 +102,7 @@ export const login = (email, password) => {
     };
 }
 
-export const register = (user) => {
+export const onRegister = (user) => {
     return dispatch => {
         let registerData = null;
         dispatch(authStart());
@@ -158,10 +158,10 @@ export const authCheckState = () => {
                         address: userData.address,
                         zipCode: userData.zipCode,
                         name: userData.name,
-                        email: userData.email 
+                        email: userData.email
                     }));
                     dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
-                })    
+                })
             } else {
                 dispatch(logOut());
             }

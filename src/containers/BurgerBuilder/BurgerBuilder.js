@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 import axiosOrders from '../../axios-orders';
 import Burger from '../../components/Burger/Burger';
@@ -15,108 +15,103 @@ import {resetPurchase, addIngredient, removeIngredient,
 import {MAX_INGREDIENT_VAL} from '../../constants/burgerBuilderConstants';
 import classes from "./BurgerBuilder.css";
 
-export class BurgerBuilder extends Component {
+export const burgerBuilder = props => {
 
-    componentDidMount () {
-        if (this.props.ingredientsCounter && (this.props.purchasingStarted || !this.props.purchased))
+    useEffect(() => {
+        if (props.ingredientsCounter && (props.purchasingStarted || !props.purchased))
             return;
-        this.props.resetPurchase();
-        this.props.initBurger();
-    }
+        props.resetPurchase();
+        props.initBurger();
+    }, [props.ingredientsCounter, props.purchasingStarted, props.purchased]);
 
-    orderClickHandler = () => {
-        if (this.props.isAuthenticated) {
-            this.props.purchasing()
+    const orderClickHandler = useCallback(() => {
+        if (props.isAuthenticated) {
+            props.purchasing()
         } else {
-            this.props.history.push('/login');
+            props.history.push('/login');
         }
-    }
+    }, [props.isAuthenticated]);
 
-    purchaseCancelHandler = () => {
-        this.props.stopPurchasing();
-    }
+    const purchaseContinueHandler = useCallback(() => {
+        props.purchaseInit();
+        props.purchasing();
+        props.history.push("/checkout");
+    }, [props.purchaseInit, props.purchasing]);
 
-    purchaseContinueHandler = () => {
-        this.props.purchaseInit();
-        this.props.purchasing();
-        this.props.history.push("/checkout");
-    }
-
-    updatePurchaseState = (ingredientsCounter) =>{
+    const updatePurchaseState = useCallback((ingredientsCounter) =>{
         return Object.keys(ingredientsCounter).some(elem => {
             return ingredientsCounter[elem] > 0;
         });
-    }
+    }, []);
 
-    onClockRemoveHandler = (ingredient, id) => {
-        this.props.removeByClicking(ingredient, id);
-    }
+    const onClockRemoveHandler = useCallback((ingredient, id) => {
+        props.removeByClicking(ingredient, id);
+    }, [props.removeByClicking]);
 
-    disableLessButton = () => {
+    const disableLessButton = useCallback(() => {
         const disabledInfo = {
-            ...this.props.ingredientsCounter
+            ...props.ingredientsCounter
         };
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <= 0;
         }
         return disabledInfo
-    }
+    }, [props.ingredientsCounter]);
 
-    disableMoreButton = () => {
+    const disableMoreButton = useCallback(() => {
         const disabledInfo = {
-            ...this.props.ingredientsCounter
+            ...props.ingredientsCounter
         };
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] >= MAX_INGREDIENT_VAL[key];
         }
         return disabledInfo
-    }
+    }, [props.ingredientsCounter]);
 
-    render() {
-        let orderSummary = null;
-        let burger = this.props.error ? <p>Ingredients couldn't be loaded</p> : <Spinner/>;
-        if (this.props.ingredientsCounter)
-        {
-            burger = (
-                <div className={classes.mainPanel}>
-                    <div className={[classes.BurgerBuilder, classes.Item].join(" ")}>
-                        <Burger burger={this.props.burger} clicked={this.onClockRemoveHandler}></Burger>
-                    </div>
-                    <IngredientContext.Provider value={{
-                        add: this.props.addIngredient,
-                        rem: this.props.removeIngredient
-                    }}>
-                    <div className={classes.Item}>
-                        <BuildControls
-                            ingredientsCounter={this.props.ingredientsCounter}
-                            disabledLess={this.disableLessButton()}
-                            disabledMore={this.disableMoreButton()}
-                            totalPrice={this.props.totalPrice}
-                            disableDisplay={!this.updatePurchaseState(this.props.ingredientsCounter)}
-                            isAuth={this.props.isAuthenticated}
-                            purchased={this.orderClickHandler}/>
-                    </div>
-                    </IngredientContext.Provider>
-
+    let orderSummary = null;
+    let burger = props.error ? <p>Ingredients couldn't be loaded</p> : <Spinner/>;
+    if (props.ingredientsCounter)
+    {
+        burger = (
+            <div className={classes.mainPanel}>
+                <div className={[classes.BurgerBuilder, classes.Item].join(" ")}>
+                    <Burger burger={props.burger} clicked={onClockRemoveHandler}></Burger>
                 </div>
-            )
-            orderSummary = (
-                <OrderSummary
-                    calcelOrder={this.purchaseCancelHandler}
-                    finOrder={this.purchaseContinueHandler}
-                    ingredientsCounter={this.props.ingredientsCounter}
-                    price={this.props.totalPrice}/>
-            );
-        }
-        return (
-            <Aux>
-                <Modal show={this.props.purchasingStarted} modalClosed={this.purchaseCancelHandler}>
-                    {orderSummary}
-                </Modal>
-                    {burger}
-            </Aux>
+                <IngredientContext.Provider value={{
+                    add: props.addIngredient,
+                    rem: props.removeIngredient
+                }}>
+                <div className={classes.Item}>
+                    <BuildControls
+                        ingredientsCounter={props.ingredientsCounter}
+                        disabledLess={disableLessButton()}
+                        disabledMore={disableMoreButton()}
+                        totalPrice={props.totalPrice}
+                        disableDisplay={!updatePurchaseState(props.ingredientsCounter)}
+                        isAuth={props.isAuthenticated}
+                        purchased={orderClickHandler}/>
+                </div>
+                </IngredientContext.Provider>
+
+            </div>
+        )
+        orderSummary = (
+            <OrderSummary
+                calcelOrder={() => props.stopPurchasing()}
+                finOrder={purchaseContinueHandler}
+                ingredientsCounter={props.ingredientsCounter}
+                price={props.totalPrice}/>
         );
     }
+
+    return (
+        <Aux>
+            <Modal show={props.purchasingStarted} modalClosed={() => props.stopPurchasing()}>
+                {orderSummary}
+            </Modal>
+                {burger}
+        </Aux>
+    );
 }
 
 const mapDispatchtoProps = (dispatch) => {
@@ -144,4 +139,4 @@ const mapStatetoProps = (state) => {
     };
 }
 
-export default connect(mapStatetoProps, mapDispatchtoProps)(withErrorHandler(BurgerBuilder, axiosOrders));
+export default connect(mapStatetoProps, mapDispatchtoProps)(withErrorHandler(burgerBuilder, axiosOrders));

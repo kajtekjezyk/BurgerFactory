@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useEffect, useCallback, useState, useRef} from 'react';
 import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.css';
 import Axios from '../../../axios-orders';
@@ -11,164 +11,161 @@ import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import AddressChange from '../../../components/AddressChange/AddressChange';
 import {makeInputField, checkValidity, checkIfFormIsValid, generateForm} from "../../../helpers/formHelpers";
 
-class ContactData extends Component {
-    
-    state = {
-        orderForm: {
-            name: {
-                ...makeInputField("Your Name", "Name"),
-                value: this.props.userName,
-                validation: {
-                    isNonNumeric: true,
-                    required: true
-                },
-                touched: true,
-                valid: true,
-                errorMessage: "Name is required"
+const contactData = props => {
+    const myRef = useRef(null);
+    const [isFormValid, setIsFormValid] = useState(false);
+    const [hasAddressChanged, setHasAddressChanged] = useState(false);
+    const [orderForm, setOrderForm] = useState({
+        name: {
+            ...makeInputField("Your Name", "Name"),
+            value: props.userName,
+            validation: {
+                isNonNumeric: true,
+                required: true
             },
-            email: {
-                ...makeInputField("Your Email", "Email", "email"),
-                value: this.props.userEmail,
-                validation: {
-                    required: true,
-                    isEmail: true
-                },
-                touched: true,
-                valid: true,
-                errorMessage: "Invalid Email"
-            },
-            street: {
-                ...makeInputField("Street", "Address"),
-                value : this.props.userAddress,
-                errorMessage: "Address is required",
-                touched: true,
-                valid: true
-            },
-            zipCode: {
-                ...makeInputField("Postal Code", "Zip-Code"),
-                validation: {
-                    required: true,
-                    minLength: 5,
-                    maxLength: 6,
-                    isZip: true
-                },
-                value : this.props.userZipCode,
-                errorMessage: "Invalid postal code: example 01-111",
-                touched: true,
-                valid: true,
-            },
-            burgerName: {
-                ...makeInputField("Type Burger Name", "Burger Name"),
-                validation: {},
-                touched: true,
-                valid: true,
-                value: this.props.burgerName,
-                defaultValue: "My Burger"
-            },
-            deliveryMethod: {
-                inputType: "select",
-                validation: {},
-                value: "Fastest",
-                label: "Delivery Method",
-                elementConfig: {
-                   options:  [
-                    {value: "Fastest", displayValue: "Fastest"},
-                    {value: "Cheapest", displayValue: "Chepest"}
-                ]}
-            }
+            touched: true,
+            valid: true,
+            errorMessage: "Name is required"
         },
-        isFormValid: false,
-        hasAddressChanged: false
-    }
-    componentDidMount = () => {
-        this.setState({isFormValid: checkIfFormIsValid(this.state.orderForm)})
-        this.executeScroll();
-    }
-    inputChangedHandler = (event, type) => {
-        const formData = {...this.state.orderForm};
+        email: {
+            ...makeInputField("Your Email", "Email", "email"),
+            value: props.userEmail,
+            validation: {
+                required: true,
+                isEmail: true
+            },
+            touched: true,
+            valid: true,
+            errorMessage: "Invalid Email"
+        },
+        street: {
+            ...makeInputField("Street", "Address"),
+            value : props.userAddress,
+            errorMessage: "Address is required",
+            touched: true,
+            valid: true
+        },
+        zipCode: {
+            ...makeInputField("Postal Code", "Zip-Code"),
+            validation: {
+                required: true,
+                minLength: 5,
+                maxLength: 6,
+                isZip: true
+            },
+            value : props.userZipCode,
+            errorMessage: "Invalid postal code: example 01-111",
+            touched: true,
+            valid: true,
+        },
+        burgerName: {
+            ...makeInputField("Type Burger Name", "Burger Name"),
+            validation: {},
+            touched: true,
+            valid: true,
+            value: props.burgerName,
+            defaultValue: "My Burger"
+        },
+        deliveryMethod: {
+            inputType: "select",
+            validation: {},
+            value: "Fastest",
+            label: "Delivery Method",
+            elementConfig: {
+               options:  [
+                {value: "Fastest", displayValue: "Fastest"},
+                {value: "Cheapest", displayValue: "Chepest"}
+            ]}
+        }
+    });
+
+    useEffect(() => {
+        setIsFormValid(checkIfFormIsValid(orderForm));
+        executeScroll();
+    }, []);
+
+    const inputChangedHandler = useCallback((event, type) => {
+        const formData = {...orderForm};
         const FormElement = {...formData[type]};
         FormElement.value = event.target.value;
         FormElement.valid = checkValidity(event.target.value, FormElement.validation);
         FormElement.touched = true;
         formData[type] = FormElement;
+        setIsFormValid(checkIfFormIsValid(formData));
+        setOrderForm(formData);
+    }, [orderForm, checkValidity, checkIfFormIsValid]);
 
-        this.setState({orderForm: formData, isFormValid: checkIfFormIsValid(formData)})
+    const executeScroll = useCallback(() => myRef.current.scrollIntoView(), []);
 
-    }
-    executeScroll = () => this.myRef.scrollIntoView()
-    
-    sendOrder = () => {
+    const sendOrder = useCallback(() => {
         const formData = {};
-        for (let formElement in this.state.orderForm)
+        for (let formElement in orderForm)
         {
-            formData[formElement] = this.state.orderForm[formElement]["value"];
+            formData[formElement] = orderForm[formElement]["value"];
         }
-        if (formData['burgerName'] === "") formData['burgerName'] = this.state.orderForm.burgerName.defaultValue;
+        if (formData['burgerName'] === "") formData['burgerName'] = orderForm.burgerName.defaultValue;
         const order = {
-            ingredientsCounter: this.props.ingredientsCounter,
-            burger: this.props.burger,
-            price: this.props.price,
+            ingredientsCounter: props.ingredientsCounter,
+            burger: props.burger,
+            price: props.price,
             orderData: formData,
-            userId: this.props.userId,
+            userId: props.userId,
         };
-        this.props.purchaseBurgerStart(order, this.props.token);
-    } 
-    
-    hasAddressChanged = () => {
+        props.purchaseBurgerStart(order, props.token);
+    }, [orderForm, props.ingredientsCounter, props.burger, props.price,
+        props.userId, props.token, props.purchaseBurgerStart]);
+
+    const checkIfAddressChanged = useCallback(() => {
         let result = true;
-        result = this.state.orderForm.street.value === this.props.userAddress && result;
-        result = this.state.orderForm.zipCode.value === this.props.userZipCode && result;
-        this.setState({hasAddressChanged: !result})
+        result = orderForm.street.value === props.userAddress && result;
+        result = orderForm.zipCode.value === props.userZipCode && result;
+        setHasAddressChanged(!result);
         return !result;
-    }
+    }, [orderForm.street.value, orderForm.zipCode.value, props.userAddress, props.userZipCode]);
 
-    orderHandler = (event) => {
+    const orderHandler = useCallback((event) => {
         event.preventDefault();
-        if (!this.hasAddressChanged()) {
-            this.sendOrder();
+        if (!checkIfAddressChanged()) {
+            sendOrder();
         }
-    }
+    }, [checkIfAddressChanged, sendOrder]);
 
-    onCancelHandler = () => {
-        this.setState({hasAddressChanged: false})
-    }
+    const changeAddress = useCallback(() => {
+        props.modifyAddressData(orderForm.street.value,
+                                orderForm.zipCode.value);
+        sendOrder();
+    }, [orderForm.street.value, orderForm.zipCode.value, sendOrder]);
 
-    changeAddress = () => {
-        this.props.modifyAddressData(this.state.orderForm.street.value,
-                                     this.state.orderForm.zipCode.value);
-        this.sendOrder();
-    }
 
-    render () {
-        let form = <Spinner />;
-        const formList = [];
-        if (!this.props.loading) {
-            generateForm(formList, this.state.orderForm, this.inputChangedHandler)
-            form = (
-                <form onSubmit={this.orderHandler}>
-                    {formList}
-                    <Button btnType="Success" disabled={!this.state.isFormValid}>ORDER</Button>
-                </form>
-            );
-        }
-        return (
-            <Aux>
-                <Modal
-                    show={this.state.hasAddressChanged}
-                    modalClosed={this.onCancelHandler}>
-                        <AddressChange
-                            cancel={this.onCancelHandler}
-                            decline={this.sendOrder}
-                            proceed={this.changeAddress}
-                        />
-                </Modal>
-                <div className={classes.ContactData} ref={ (ref) => this.myRef=ref}>
-                    <h4>Enter Your Contact Data</h4>
-                    {form}
-                </div>
-            </Aux>
+    let form = <Spinner />;
+    const formList = [];
+    if (!props.loading) {
+        generateForm(formList, orderForm, inputChangedHandler)
+        form = (
+            <form onSubmit={orderHandler}>
+                {formList}
+                <Button btnType="Success" disabled={!isFormValid}>ORDER</Button>
+            </form>
         );
     }
+    return (
+        <Aux>
+            <Modal
+                show={hasAddressChanged}
+                modalClosed={() => setHasAddressChanged(false)}>
+                    <AddressChange
+                        cancel={() => setHasAddressChanged(false)}
+                        decline={sendOrder}
+                        proceed={changeAddress}
+                    />
+            </Modal>
+            <div className={classes.ContactData} ref={myRef}>
+                <h4>Enter Your Contact Data</h4>
+                {form}
+            </div>
+        </Aux>
+    );
+
 }
 
 const mapStateToProps = (state) => {
@@ -194,4 +191,4 @@ const mapDispatchToPrios = (dispatch) => {
     };
 };
 
-export default  connect(mapStateToProps, mapDispatchToPrios)(withErrorHandler(ContactData, Axios));
+export default  connect(mapStateToProps, mapDispatchToPrios)(withErrorHandler(contactData, Axios));

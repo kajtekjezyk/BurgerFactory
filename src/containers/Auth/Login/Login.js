@@ -1,105 +1,98 @@
-import React, {Component} from 'react';
+import React, {useState, useCallback} from 'react';
 import {makeInputField, checkValidity, checkIfFormIsValid, generateForm} from '../../../helpers/formHelpers';
 import Button from '../../../components/UI/Button/Button';
 import classes from './Login.css';
 import {connect} from 'react-redux';
-import {login} from '../../../store/actions/auth';
+import {onLogin} from '../../../store/actions/auth';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import {Redirect} from 'react-router-dom';
 
-class Login extends Component {
-
-    state = {
-        controls: {
-            email: {
-                ...makeInputField("Your Email","Email", "email"),
-                validation: {
-                    required: true,
-                    isEmail: true
-                },
-                errorMessage: "Wrong Email"
+const login = props => {
+    const [isFormValid, setIsFormValid] = useState(false);
+    const [controls, setControls] = useState({
+        email: {
+            ...makeInputField("Your Email","Email", "email"),
+            validation: {
+                required: true,
+                isEmail: true
             },
-            password: {
-                ...makeInputField(null, "Password", "password"),
-                elementConfig: {
-                    placeholder: "Password",
-                    type: "password"
-                },
-                validation: {
-                    required: true,
-                    minLength: 6
-                },
-                errorMessage: "Minimal password length: 6 chars"
-            },
+            errorMessage: "Wrong Email"
         },
-        isFormValid: false,
-    };
+        password: {
+            ...makeInputField(null, "Password", "password"),
+            elementConfig: {
+                placeholder: "Password",
+                type: "password"
+            },
+            validation: {
+                required: true,
+                minLength: 6
+            },
+            errorMessage: "Minimal password length: 6 chars"
+        }
+    });
 
-    inputChangedHandler = (event, type) => {
-        const formData = {...this.state.controls};
+    const inputChangedHandler = useCallback((event, type) => {
+        const formData = {...controls};
         const FormElement = {...formData[type]};
         FormElement.value = event.target.value;
         FormElement.valid = checkValidity(event.target.value, FormElement.validation);
         FormElement.touched = true;
         formData[type] = FormElement;
+        setControls(formData);
+        setIsFormValid(checkIfFormIsValid(formData));
+    }, [controls, checkValidity, checkIfFormIsValid]);
 
-        this.setState({controls: formData, isFormValid: checkIfFormIsValid(formData)})
-    }
-
-    authHandler = (event) => {
+    const authHandler = useCallback((event) => {
         event.preventDefault();
-        this.props.onAuth(this.state.controls.email.value,
-                          this.state.controls.password.value);
+        props.onAuth(controls.email.value,
+                     controls.password.value);
+    }, [controls.email.value, controls.password.value]);
+
+    const switchAuthModeHandler = useCallback(() => {
+        props.history.push('/register')
+    }, []);
+
+
+    let errorMessage =  null;
+    if (props.error) {
+        errorMessage = (
+            <p>{props.error}</p>
+        )
     }
 
-    switchAuthModeHandler = () => {
-        this.props.history.push('/register')
-    }
-
-    render() {
-
-        let errorMessage =  null;
-        if (this.props.error) {
-            errorMessage = (
-                <p>{this.props.error}</p>
-            )
-        }
-
-        let form = <Spinner />;
-        const formList = [];
-        generateForm(formList, this.state.controls, this.inputChangedHandler);
-        if (!this.props.loading)
-        {
-            form = (
-                <Aux>
-                    <form onSubmit={this.authHandler}>
-                        {errorMessage}
-                        <div>
-                            <h2>Login</h2>
-                            {formList}
-                            <Button btnType="Success" disabled={!this.state.isFormValid}>SUBBMIT</Button>
-                        </div>
-                    </form>
-                    <Button btnType="Danger" 
-                        clicked={this.switchAuthModeHandler}>
-                            Switch to Register
-                    </Button>
-                </Aux>
-            );
-        }
-        let redirect = null;
-        if (this.props.isAuthenticated) redirect = <Redirect to="/"/>
-        return (
-            <div className={classes.AuthData}>
-                {redirect}
-                {form}
-            </div>
+    let form = <Spinner />;
+    const formList = [];
+    generateForm(formList, controls, inputChangedHandler);
+    if (!props.loading)
+    {
+        form = (
+            <Aux>
+                <form onSubmit={authHandler}>
+                    {errorMessage}
+                    <div>
+                        <h2>Login</h2>
+                        {formList}
+                        <Button btnType="Success" disabled={!isFormValid}>SUBBMIT</Button>
+                    </div>
+                </form>
+                <Button btnType="Danger"
+                    clicked={switchAuthModeHandler}>
+                        Switch to Register
+                </Button>
+            </Aux>
         );
     }
+    let redirect = null;
+    if (props.isAuthenticated) redirect = <Redirect to="/"/>
+    return (
+        <div className={classes.AuthData}>
+            {redirect}
+            {form}
+        </div>
+    );
 }
-
-
 
 const mapStateToProps = state => {
     return {
@@ -111,8 +104,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAuth: (email, password) => dispatch(login(email, password))
+        onAuth: (email, password) => dispatch(onLogin(email, password))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(login);
