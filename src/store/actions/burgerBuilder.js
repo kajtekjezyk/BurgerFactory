@@ -6,7 +6,7 @@ export const addIngredient = (ingType) => {
         type: actionTypes.ADD_INGREDIENT,
         ingType: ingType
     };
-}; 
+};
 
 export const removeIngredient = (ingType) => {
     return {
@@ -15,14 +15,14 @@ export const removeIngredient = (ingType) => {
     };
 };
 
-const initIngredints = (burger) => {
+export const initIngredints = (burger) => {
     return {
         type: actionTypes.INIT_BURGER,
         burger: burger
     }
 }
 
-const reportError = () => {
+export const reportError = () => {
     return {
         type: actionTypes.REPORT_ERROR,
     }
@@ -38,14 +38,10 @@ export const stopPurchasing = () => {
     return {
         type: actionTypes.STOP_PURCHASING
     }
-} 
+}
 
 export const initBurger = () => {
-    return dispatch => {
-        Axios.get('https://react-my-burger-2c971-default-rtdb.firebaseio.com/ingredients.json').then(response => {
-            dispatch(initIngredints(response.data));
-        }).catch(error => {
-            dispatch(reportError)
-        })
+    return {
+        type: actionTypes.INIT_BURGER_START
     }
 }

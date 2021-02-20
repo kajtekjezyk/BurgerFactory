@@ -2,11 +2,20 @@ export {addIngredient,
         removeIngredient,
         initBurger,
         purchasing,
-        stopPurchasing} from "./burgerBuilder";
+        stopPurchasing,
+        reportError,
+        initIngredints} from "./burgerBuilder";
 
 export {purchaseBurgerStart,
-        purchaseInit} from "./order";
+        purchaseInit,
+        purchaseBurgerSuccess,
+        purchaseBurgerFail,
+        purchaseStarted} from "./order";
 
 export {auth,
         logOut,
-        authCheckState} from "./auth";
+        authCheckState,
+        authStart,
+        authSuccess,
+        authFail,
+        checkAuthTimeout} from "./auth";
